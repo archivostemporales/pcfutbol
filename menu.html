@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PC FÚTBOL 2026</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* --- ESTILOS GENERALES --- */
+        body {
+            background-color: #001122;
+            background-image: 
+                linear-gradient(rgba(0, 17, 34, 0.9), rgba(0, 17, 34, 0.9)),
+                repeating-linear-gradient(0deg, transparent, transparent 1px, #000 2px), /* Scanlines */
+                url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
+            font-family: 'Verdana', sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            padding: 20px; /* Margen para que no toque los bordes */
+            box-sizing: border-box;
+        }
+
+        /* --- CONTENEDOR PRINCIPAL (LA VENTANA) --- */
+        .game-window {
+            width: 100%;
+            max-width: 1000px; /* Ancho máximo para que no se estire demasiado */
+            background: linear-gradient(135deg, #003366 0%, #001a33 100%);
+            border: 3px solid #5a8cb8;
+            border-radius: 10px;
+            box-shadow: 0 0 40px rgba(0, 150, 255, 0.3);
+            display: flex;
+            flex-wrap: wrap; /* Permite que se ajuste en móviles */
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* --- BARRA LATERAL (IZQUIERDA) --- */
+        .sidebar {
+            flex: 1;
+            min-width: 250px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid #4a6c8a;
+            justify-content: center;
+            text-align: center;
+        }
+
+        /* Título Dorado */
+        .title-container h1 {
+            font-family: 'Arial Black', sans-serif;
+            font-size: 42px;
+            line-height: 1;
+            margin: 0;
+            color: #ffd700;
+            transform: skew(-5deg);
+            text-shadow: 
+                2px 2px 0px #b08f00,
+                4px 4px 0px #5e4b00,
+                5px 5px 10px rgba(0,0,0,0.8);
+        }
+
+        .title-container span {
+            font-size: 55px;
+            color: #fff;
+            display: block;
+            text-shadow: 3px 3px 0px #444;
+        }
+
+        /* Logo Cuadros (Estilo Dinamic) */
+        .logo-dinamic {
+            display: flex;
+            justify-content: center;
+            gap: 4px;
+            margin: 20px 0;
+        }
+        .cube { width: 18px; height: 18px; border: 1px solid rgba(255,255,255,0.4); box-shadow: 2px 2px 5px #000; }
+        .c-red { background: #cc0000; }
+        .c-green { background: #00aa00; }
+        .c-blue { background: #0000cc; }
+        .c-yellow { background: #ffcc00; }
+
+        .info-box {
+            margin-top: 30px;
+            background: rgba(0, 30, 60, 0.6);
+            border: 1px solid #5a8cb8;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: left;
+            font-size: 12px;
+            color: #89cff0;
+        }
+        .info-box p { margin: 5px 0; border-bottom: 1px solid rgba(90, 140, 184, 0.3); padding-bottom: 2px; }
+        .info-box strong { color: #fff; }
+
+        /* --- ZONA DE MENÚ (DERECHA) --- */
+        .menu-area {
+            flex: 2;
+            min-width: 300px;
+            padding: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .grid-menu {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* Responsive grid */
+            gap: 20px;
+            width: 100%;
+        }
+
+        /* --- BOTONES DEL MENÚ --- */
+        a.menu-btn {
+            text-decoration: none; /* Quitar subrayado del link */
+            background: linear-gradient(180deg, #e6f0fa 0%, #a0c0e0 45%, #6080a0 100%);
+            border: 2px solid #fff;
+            border-radius: 8px;
+            height: 130px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.5);
+            transition: all 0.2s ease;
+            overflow: hidden;
+        }
+
+        /* Icono dentro del botón */
+        .menu-btn i {
+            font-size: 45px;
+            color: #002244;
+            margin-bottom: 10px;
+            z-index: 2;
+            filter: drop-shadow(1px 1px 0px rgba(255,255,255,0.6));
+            transition: 0.2s;
+        }
+
+        /* Texto del botón */
+        .menu-btn span {
+            font-size: 14px;
+            font-weight: 900;
+            text-transform: uppercase;
+            color: #001a33;
+            background: rgba(255,255,255,0.7);
+            padding: 4px 10px;
+            border-radius: 4px;
+            z-index: 2;
+        }
+
+        /* Fondo decorativo (imagen tenue) */
+        .btn-bg {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0.15;
+            background-size: cover;
+            background-position: center;
+            z-index: 1;
+        }
+
+        /* Efectos Hover */
+        a.menu-btn:hover {
+            transform: scale(1.03); /* Crece un poco */
+            border-color: #ffd700; /* Borde dorado */
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.6); /* Resplandor dorado */
+        }
+
+        a.menu-btn:hover i {
+            color: #000;
+            transform: scale(1.1);
+        }
+
+        a.menu-btn:active {
+            transform: scale(0.98);
+            filter: brightness(0.9);
+        }
+
+        /* Colores específicos de fondo por botón (opcional) */
+        .btn-jornada .btn-bg { background-image: url('https://www.transparenttextures.com/patterns/grass.png'); background-color: green; }
+        .btn-fichajes .btn-bg { background-image: url('https://www.transparenttextures.com/patterns/diagmonds-light.png'); background-color: blue; }
+        .btn-clasi .btn-bg { background-image: url('https://www.transparenttextures.com/patterns/grid-me.png'); background-color: orange; }
+        .btn-guardar .btn-bg { background-color: red; }
+
+        /* Footer pequeño */
+        .footer {
+            width: 100%;
+            text-align: right;
+            padding: 5px 15px;
+            background: #000;
+            color: #4a6c8a;
+            font-size: 10px;
+            border-top: 1px solid #333;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="game-window">
+        <div class="sidebar">
+            <div class="title-container">
+                <h1>PC FÚTBOL<br><span>2026</span></h1>
+            </div>
+            
+            <div class="logo-dinamic">
+                <div class="cube c-red"></div>
+                <div class="cube c-green"></div>
+                <div class="cube c-blue"></div>
+                <div class="cube c-yellow"></div>
+            </div>
+
+            <div class="info-box">
+                <p>Mánager: <strong>José María</strong></p>
+                <p>Equipo: <strong>Utrera</strong></p>
+                <p>División: <strong>1ª División</strong></p>
+                <p>Fecha: <strong>Temporada 2025-2026</strong></p>
+                <p style="border:none; color: #ffd700; text-align:center; margin-top:10px;">¡BIENVENIDO!</p>
+            </div>
+        </div>
+
+        <div class="menu-area">
+            <div class="grid-menu">
+                
+                <a href="calendario.html" class="menu-btn btn-jornada">
+                    <div class="btn-bg"></div>
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Calendario</span>
+                </a>
+
+                <a href="sim/fichajes.html" class="menu-btn btn-fichajes">
+                    <div class="btn-bg"></div>
+                    <i class="fas fa-briefcase"></i>
+                    <span>Fichajes</span>
+                </a>
+
+                <a href="clasificacion.html" target="_blank" class="menu-btn btn-clasi">
+                    <div class="btn-bg"></div>
+                    <i class="fas fa-list-ol"></i>
+                    <span>Clasificación</span>
+                </a>
+
+                <a href="sim/alineaciones.html" class="menu-btn btn-guardar">
+                    <div class="btn-bg"></div>
+                    <i class="fas fa-clipboard-list"></i>
+                    <span>Alineaciones</span>
+                </a>
+
+            </div>
+        </div>
+
+        <div class="footer">v. 7.0 (HTML Edition) - Licencia LFP</div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHAMPIONS LEAGUE</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* --- ESTILOS BASE --- */
+        body {
+            background-color: #000510;
+            background-image: 
+                radial-gradient(circle at 50% 50%, #1a2a6c 0%, #000510 100%),
+                repeating-linear-gradient(0deg, transparent, transparent 1px, #000 2px),
+                url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
+            font-family: 'Verdana', sans-serif;
+            margin: 0; min-height: 100vh; display: flex; justify-content: center; align-items: center; color: white; padding: 20px; box-sizing: border-box;
+        }
+
+        .game-window {
+            width: 100%; max-width: 1100px;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            border: 3px solid #00e5ff; border-radius: 10px; box-shadow: 0 0 50px rgba(0, 229, 255, 0.3);
+            display: flex; overflow: hidden; position: relative; min-height: 600px;
+overflow-x: scroll;
+        }
+
+        /* --- BARRA LATERAL --- */
+        .sidebar {
+            width: 280px; background: rgba(0, 0, 0, 0.6); padding: 30px; display: flex; flex-direction: column; border-right: 1px solid #00e5ff;
+        }
+
+        .title-container h1 { font-family: 'Arial Black', sans-serif; font-size: 30px; color: #00e5ff; transform: skew(-5deg); text-shadow: 2px 2px 0px #005a63; margin: 0; }
+        .title-container span { font-size: 40px; color: #fff; display: block; text-shadow: 3px 3px 0px #222; }
+
+        .logo-dinamic { display: flex; gap: 4px; margin: 15px 0; }
+        .cube { width: 14px; height: 14px; border: 1px solid rgba(255,255,255,0.4); }
+        .c-red { background: #cc0000; } .c-green { background: #00aa00; } .c-blue { background: #0000cc; } .c-yellow { background: #ffcc00; }
+
+        .btn-back {
+            margin-top: auto; padding: 12px; background: #001a33; border: 2px solid #00e5ff; color: white;
+            text-decoration: none; text-align: center; font-weight: bold; border-radius: 5px; transition: 0.2s;
+        }
+        .btn-back:hover { background: #00e5ff; color: #000; box-shadow: 0 0 15px #00e5ff; }
+
+        /* --- ÁREA DE COMPETICIÓN --- */
+        .main-area { flex: 1; padding: 30px; display: flex; flex-direction: column; }
+        
+        .header-champions {
+            display: flex; align-items: center; gap: 20px; border-bottom: 2px solid #00e5ff; padding-bottom: 15px; margin-bottom: 25px;
+        }
+        .header-champions i { font-size: 50px; color: #fff; filter: drop-shadow(0 0 15px rgba(0,229,255,0.8)); }
+
+        .comp-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+        }
+
+        .comp-section {
+            background: rgba(0, 0, 0, 0.4); border-radius: 10px; padding: 20px; border: 1px solid rgba(0, 229, 255, 0.3);
+        }
+
+        .section-title {
+            color: #00e5ff; font-weight: 900; font-size: 14px; margin-bottom: 15px; text-align: center; letter-spacing: 2px;
+        }
+
+        .match-list {
+            display: flex; flex-direction: column; gap: 10px;
+        }
+
+        .match-btn {
+            background: linear-gradient(180deg, #002244 0%, #001122 100%);
+            border: 1px solid #00e5ff; border-radius: 4px; padding: 12px; text-decoration: none;
+            color: #fff; display: flex; justify-content: space-between; align-items: center;
+            font-weight: 700; font-size: 11px; transition: 0.2s;
+        }
+
+        .match-btn:hover { background: #00e5ff; color: #000; transform: translateX(5px); }
+        .match-btn i { font-size: 14px; opacity: 0.7; }
+        
+        /* Final */
+        .final-box {
+            grid-column: 1 / -1; background: linear-gradient(90deg, transparent, rgba(0,229,255,0.1), transparent);
+            padding: 20px; text-align: center; border-top: 1px solid rgba(0,229,255,0.5); margin-top: 10px;
+        }
+        .btn-final {
+            display: inline-block; background: #fff; color: #000; padding: 15px 40px; border-radius: 50px;
+            font-weight: 900; text-decoration: none; box-shadow: 0 0 20px rgba(255,255,255,0.4); transition: 0.3s;
+        }
+        .btn-final:hover { transform: scale(1.1); box-shadow: 0 0 30px #00e5ff; }
+
+    </style>
+</head>
+<body>
+
+    <div class="game-window">
+        <div class="sidebar">
+            <div class="title-container">
+                <h1>CHAMPIONS<br><span>LEAGUE</span></h1>
+            </div>
+            
+            <div class="logo-dinamic">
+                <div class="cube c-red"></div>
+                <div class="cube c-green"></div>
+                <div class="cube c-blue"></div>
+                <div class="cube c-yellow"></div>
+            </div>
+
+            <div style="background: rgba(0, 40, 80, 0.7); padding: 15px; border-radius: 5px; font-size: 11px; margin-top: 10px; border: 1px solid #00e5ff; line-height: 1.4;">
+                <p>Estado: <strong>Fase Final</strong></p>
+                <p>Sede Final: <strong>Munich</strong></p>
+                <p style="color: #00e5ff; text-align: center; margin-top: 10px; font-weight: bold;">LAS ESTRELLAS BRILLAN</p>
+            </div>
+
+            <a href="calendario.html" class="btn-back"><i class="fas fa-calendar-alt"></i> CALENDARIO</a>
+        </div>
+
+        <div class="main-area">
+            <div class="header-champions">
+                <i class="fas fa-star"></i>
+                <div>
+                    <h2 style="margin:0; color:#fff; letter-spacing: 2px;">ÉLITE EUROPEA</h2>
+                    <small style="color:#00e5ff;">TEMPORADA 2025-2026</small>
+                </div>
+            </div>
+
+            <div class="comp-grid">
+                
+                <div class="comp-section">
+                    <div class="section-title">CUARTOS DE FINAL</div>
+                    <div class="match-list">
+                        <a href="sim/partido_champions.html" class="match-btn">PARTIDO DE IDA <i class="fas fa-chevron-right"></i></a>
+                        <a href="sim/partido_champions.html" class="match-btn">PARTIDO DE VUELTA <i class="fas fa-chevron-right"></i></a>
+                    </div>
+                </div>
+
+                <div class="comp-section">
+                    <div class="section-title">SEMIFINALES</div>
+                    <div class="match-list">
+                        <a href="sim/partido_champions.html" class="match-btn">PARTIDO DE IDA <i class="fas fa-chevron-right"></i></a>
+                        <a href="sim/partido_champions.html" class="match-btn">PARTIDO DE VUELTA <i class="fas fa-chevron-right"></i></a>
+                    </div>
+                </div>
+
+                <div class="final-box">
+                    <div class="section-title" style="margin-bottom: 20px;">LA GRAN FINAL</div>
+                    <a href="sim/partido_champions.html" class="btn-final">
+                        <i class="fas fa-trophy"></i> JUGAR FINAL
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

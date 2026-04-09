@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COPA DEL REY</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* --- ESTILOS BASE --- */
+        body {
+            background-color: #001122;
+            background-image: 
+                linear-gradient(rgba(0, 17, 34, 0.9), rgba(0, 17, 34, 0.9)),
+                repeating-linear-gradient(0deg, transparent, transparent 1px, #000 2px),
+                url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
+            font-family: 'Verdana', sans-serif;
+            margin: 0; min-height: 100vh; display: flex; justify-content: center; align-items: center; color: white; padding: 20px; box-sizing: border-box;
+        }
+
+        .game-window {
+            width: 100%; max-width: 1100px;
+            background: linear-gradient(135deg, #001a33 0%, #000000 100%);
+            border: 3px solid #ffd700; border-radius: 10px; box-shadow: 0 0 40px rgba(255, 215, 0, 0.2);
+            display: flex; overflow: hidden; position: relative; min-height: 600px;
+overflow-x: scroll;
+        }
+
+        /* --- BARRA LATERAL (DORADA PARA COPA) --- */
+        .sidebar {
+            width: 280px; background: rgba(0, 0, 0, 0.5); padding: 30px; display: flex; flex-direction: column; border-right: 1px solid #ffd700;
+        }
+
+        .title-container h1 { font-family: 'Arial Black', sans-serif; font-size: 32px; color: #ffd700; transform: skew(-5deg); text-shadow: 2px 2px 0px #b08f00; margin: 0; }
+        .title-container span { font-size: 45px; color: #fff; display: block; text-shadow: 3px 3px 0px #444; }
+
+        .logo-dinamic { display: flex; gap: 4px; margin: 15px 0; }
+        .cube { width: 14px; height: 14px; border: 1px solid rgba(255,255,255,0.4); }
+        .c-red { background: #cc0000; } .c-green { background: #00aa00; } .c-blue { background: #0000cc; } .c-yellow { background: #ffcc00; }
+
+        .btn-back {
+            margin-top: auto; padding: 12px; background: #003366; border: 2px solid #fff; color: white;
+            text-decoration: none; text-align: center; font-weight: bold; border-radius: 5px; transition: 0.2s;
+        }
+        .btn-back:hover { background: #0055aa; box-shadow: 0 0 10px rgba(0,150,255,0.5); }
+
+        /* --- ÁREA DE ELIMINATORIAS --- */
+        .main-area { flex: 1; padding: 30px; display: flex; flex-direction: column; }
+        
+        .header-copa {
+            display: flex; align-items: center; gap: 20px; border-bottom: 2px solid #ffd700; padding-bottom: 15px; margin-bottom: 25px;
+        }
+        .header-copa i { font-size: 50px; color: #ffd700; filter: drop-shadow(0 0 10px rgba(255,215,0,0.5)); }
+
+        .bracket-container {
+            display: flex; flex-direction: column; gap: 25px;
+        }
+
+        .round-section {
+            background: rgba(255, 255, 255, 0.05); border-radius: 10px; padding: 15px; border: 1px solid #4a6c8a;
+        }
+
+        .round-title {
+            color: #ffd700; font-weight: 900; font-size: 14px; margin-bottom: 15px; border-left: 4px solid #ffd700; padding-left: 10px;
+        }
+
+        .match-list {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;
+        }
+
+        .match-btn {
+            background: linear-gradient(180deg, #ffffff 0%, #c0c0c0 45%, #808080 100%);
+            border: 2px solid #fff; border-radius: 6px; padding: 12px; text-decoration: none;
+            color: #000; display: flex; flex-direction: column; align-items: center; gap: 5px;
+            font-weight: 900; font-size: 11px; transition: 0.2s; box-shadow: 3px 3px 10px rgba(0,0,0,0.5);
+        }
+
+        .match-btn i { font-size: 18px; color: #003366; }
+        .match-btn span.tag { font-size: 9px; background: #000; color: #fff; padding: 2px 6px; border-radius: 3px; margin-bottom: 4px; }
+        
+        .match-btn:hover { transform: scale(1.05); border-color: #ffd700; }
+        
+        /* Estilo especial para la Final */
+        .match-btn.final {
+            background: linear-gradient(180deg, #ffd700 0%, #b08f00 100%);
+            grid-column: 1 / -1; max-width: 300px; margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="game-window">
+        <div class="sidebar">
+            <div class="title-container">
+                <h1>COPA DEL<br><span>REY</span></h1>
+            </div>
+            
+            <div class="logo-dinamic">
+                <div class="cube c-red"></div>
+                <div class="cube c-green"></div>
+                <div class="cube c-blue"></div>
+                <div class="cube c-yellow"></div>
+            </div>
+
+            <div style="background: rgba(0, 30, 60, 0.6); padding: 15px; border-radius: 5px; font-size: 11px; margin-top: 10px; border: 1px solid #ffd700;">
+                <p>Torneo: <strong>Eliminatoria directa</strong></p>
+                <p>Premio: <strong>Plaza Europea</strong></p>
+                <p style="color: #ffd700; text-align: center; margin-top: 10px;">¡A UN PASO DE LA GLORIA!</p>
+            </div>
+
+            <a href="calendario.html" class="btn-back"><i class="fas fa-calendar-alt"></i> CALENDARIO</a>
+        </div>
+
+        <div class="main-area">
+            <div class="header-copa">
+                <i class="fas fa-trophy"></i>
+                <div>
+                    <h2 style="margin:0; color:#fff;">CUADRO DE COMPETICIÓN</h2>
+                    <small style="color:#ffd700;">TEMPORADA 2025-2026</small>
+                </div>
+            </div>
+
+            <div class="bracket-container">
+                
+                <div class="round-section">
+                    <div class="round-title">CUARTOS DE FINAL</div>
+                    <div class="match-list">
+                        <a href="sim/partido_copa.html" class="match-btn">
+                            <span class="tag">IDA</span>
+                            <i class="fas fa-futbol"></i>
+                            CUARTOS (IDA)
+                        </a>
+                        <a href="sim/partido_copa.html" class="match-btn">
+                            <span class="tag">VUELTA</span>
+                            <i class="fas fa-retweet"></i>
+                            CUARTOS (VUELTA)
+                        </a>
+                    </div>
+                </div>
+
+                <div class="round-section">
+                    <div class="round-title">SEMIFINALES</div>
+                    <div class="match-list">
+                        <a href="sim/partido_copa.html" class="match-btn">
+                            <span class="tag">IDA</span>
+                            <i class="fas fa-futbol"></i>
+                            SEMIFINAL (IDA)
+                        </a>
+                        <a href="sim/partido_copa.html" class="match-btn">
+                            <span class="tag">VUELTA</span>
+                            <i class="fas fa-retweet"></i>
+                            SEMIFINAL (VUELTA)
+                        </a>
+                    </div>
+                </div>
+
+                <div class="round-section" style="border-color: #ffd700;">
+                    <div class="round-title" style="text-align: center; border: none; padding: 0;">¡LA GRAN FINAL!</div>
+                    <div class="match-list">
+                        <a href="sim/partido_copa.html" class="match-btn final">
+                            <i class="fas fa-crown"></i>
+                            FINAL A PARTIDO ÚNICO
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

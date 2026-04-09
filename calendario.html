@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CALENDARIO</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* --- ESTILOS BASE (HEREDADOS DEL MENÚ) --- */
+        body {
+            background-color: #001122;
+            background-image: 
+                linear-gradient(rgba(0, 17, 34, 0.9), rgba(0, 17, 34, 0.9)),
+                repeating-linear-gradient(0deg, transparent, transparent 1px, #000 2px),
+                url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
+            font-family: 'Verdana', sans-serif;
+            margin: 0; min-height: 100vh; display: flex; justify-content: center; align-items: center; color: white; padding: 20px; box-sizing: border-box;
+        }
+
+        .game-window {
+            width: 100%; max-width: 1100px;
+            background: linear-gradient(135deg, #003366 0%, #001a33 100%);
+            border: 3px solid #5a8cb8; border-radius: 10px; box-shadow: 0 0 40px rgba(0, 150, 255, 0.3);
+            display: flex; overflow: hidden; position: relative; min-height: 600px;
+overflow-x: scroll;
+        }
+
+        /* --- BARRA LATERAL --- */
+        .sidebar {
+            width: 280px; background: rgba(0, 0, 0, 0.3); padding: 30px; display: flex; flex-direction: column; border-right: 1px solid #4a6c8a;
+        }
+
+        .title-container h1 { font-family: 'Arial Black', sans-serif; font-size: 32px; color: #ffd700; transform: skew(-5deg); text-shadow: 2px 2px 0px #b08f00; margin: 0; }
+        .title-container span { font-size: 45px; color: #fff; display: block; text-shadow: 3px 3px 0px #444; }
+
+        .logo-dinamic { display: flex; gap: 4px; margin: 15px 0; }
+        .cube { width: 14px; height: 14px; border: 1px solid rgba(255,255,255,0.4); }
+        .c-red { background: #cc0000; } .c-green { background: #00aa00; } .c-blue { background: #0000cc; } .c-yellow { background: #ffcc00; }
+
+        .btn-back {
+            margin-top: auto; padding: 12px; background: #800000; border: 2px solid #fff; color: white;
+            text-decoration: none; text-align: center; font-weight: bold; border-radius: 5px; transition: 0.2s;
+        }
+        .btn-back:hover { background: #ff0000; box-shadow: 0 0 10px rgba(255,0,0,0.5); }
+
+        /* --- ÁREA PRINCIPAL --- */
+        .main-area { flex: 1; padding: 30px; display: flex; flex-direction: column; }
+        
+        h2 { border-bottom: 2px solid #5a8cb8; padding-bottom: 10px; color: #ffd700; text-transform: uppercase; font-size: 1.5rem; }
+
+        /* --- PESTAÑAS (TABS) --- */
+        .tabs-nav { display: flex; gap: 5px; margin-bottom: 20px; }
+        .tab-btn {
+            background: linear-gradient(180deg, #4a6c8a 0%, #002244 100%);
+            border: 1px solid #5a8cb8; color: #89cff0; padding: 10px 15px; cursor: pointer;
+            font-weight: bold; text-transform: uppercase; font-size: 11px; flex: 1;
+        }
+        .tab-btn.active { background: #5a8cb8; color: white; border-bottom: none; }
+
+        /* --- CONTENIDO DE JORNADAS --- */
+        .jornada-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px;
+            max-height: 400px; overflow-y: auto; padding-right: 10px;
+        }
+
+        .jornada-item {
+            background: linear-gradient(180deg, #e6f0fa 0%, #a0c0e0 100%);
+            border: 2px solid #fff; border-radius: 5px; padding: 15px 5px; text-align: center;
+            text-decoration: none; color: #001a33; font-weight: 900; font-size: 12px;
+            transition: 0.2s; display: flex; flex-direction: column; align-items: center; gap: 5px;
+        }
+        .jornada-item i { font-size: 20px; color: #003366; }
+        .jornada-item:hover { transform: translateY(-3px); border-color: #ffd700; box-shadow: 0 5px 15px rgba(0,0,0,0.4); }
+
+        /* --- SECCIONES ESPECIALES --- */
+        .extra-modes { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-top: 20px; border-top: 1px solid #4a6c8a; pt: 20px; }
+        .mode-card {
+            padding: 15px; border-radius: 8px; text-decoration: none; text-align: center;
+            font-weight: bold; color: white; border: 2px solid rgba(255,255,255,0.3);
+            display: flex; flex-direction: column; gap: 10px; align-items: center;
+        }
+        .mode-card i { font-size: 30px; }
+        .copa { background: linear-gradient(135deg, #004e92, #000428); } /* Azul oscuro Copa */
+        .champions { background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); } /* Galáctico Champions */
+        .amistoso { background: linear-gradient(135deg, #11998e, #38ef7d); } /* Verde Amistoso */
+
+        .mode-card:hover { border-color: #ffd700; transform: scale(1.02); }
+
+    </style>
+</head>
+<body>
+
+    <div class="game-window">
+        <div class="sidebar">
+            <div class="title-container">
+                <h1>CALENDARIO<br><span>2025-2026</span></h1>
+            </div>
+            
+            <div class="logo-dinamic">
+                <div class="cube c-red"></div>
+                <div class="cube c-green"></div>
+                <div class="cube c-blue"></div>
+                <div class="cube c-yellow"></div>
+            </div>
+
+            <div style="background: rgba(0, 30, 60, 0.6); padding: 15px; border-radius: 5px; font-size: 11px; margin-top: 10px;">
+                <p>Temporada: <strong>2025-2026</strong></p>
+                <p>Jugador: <strong>José María</strong></p>
+                <p style="color: #ffd700;">Selecciona una jornada para iniciar el simulador de partidos.</p>
+            </div>
+
+            <a href="menu.html" class="btn-back"><i class="fas fa-arrow-left"></i> SALIR AL MENÚ</a>
+        </div>
+
+        <div class="main-area">
+            <h2>Competiciones Oficiales</h2>
+            
+            <div class="tabs-nav">
+                <div class="tab-btn active" onclick="location.href='sim/partido_liga.html'">Liga Española</div>
+                <div class="tab-btn" onclick="location.href='sim/partido_liga.html'">Partido de Liga</div>
+                <div class="tab-btn" onclick="location.href='liga/penaltis.html'">Tanda penaltis</div>
+            </div>
+
+            <div class="jornada-grid">
+                <script>
+                    for(let i=1; i<=14; i++) {
+                        document.write(`
+                            <a href="liga/jornada${i}.html" class="jornada-item">
+                                <i class="fas fa-futbol"></i>
+                                JORNADA ${i}
+                            </a>
+                        `);
+                    }
+                </script>
+            </div>
+
+            <h2 style="margin-top: 30px;">Otras Competiciones</h2>
+            <div class="extra-modes">
+                <a href="copa.html" class="mode-card copa">
+                    <i class="fas fa-trophy"></i>
+                    COPA DEL REY
+                </a>
+                <a href="champions.html" class="mode-card champions">
+                    <i class="fas fa-star"></i>
+                    CHAMPIONS
+                </a>
+                <a href="sim/partido_liga.html" class="mode-card amistoso">
+                    <i class="fas fa-handshake"></i>
+                    AMISTOSO
+                </a>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

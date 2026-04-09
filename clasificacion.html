@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>CLASIFICACIÓN</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --pc-blue-dark: #001a33;
+            --pc-blue-mid: #003366;
+            --pc-blue-light: #5a8cb8;
+            --pc-gold: #ffd700;
+            --pc-text: #e6f0fa;
+            --pc-cyan: #00ffff;
+        }
+
+        body {
+            background-color: #000;
+            color: var(--pc-text);
+            font-family: 'Verdana', sans-serif;
+            margin: 0; padding: 20px;
+            display: flex; justify-content: center;
+        }
+
+        .container { display: flex; gap: 20px; width: 1280px; max-width: 98vw; }
+
+        .fixtures-panel, .table-panel {
+            background: linear-gradient(180deg, var(--pc-blue-mid), var(--pc-blue-dark));
+            border: 2px solid var(--pc-blue-light);
+            border-radius: 8px; padding: 15px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.7);
+        }
+
+        .fixtures-panel { flex: 1; min-width: 400px; }
+        .table-panel { flex: 1.5; }
+
+        h2 { 
+            color: var(--pc-gold); 
+            text-transform: uppercase; 
+            font-size: 18px;
+            border-bottom: 2px solid var(--pc-blue-light); 
+            padding-bottom: 10px; 
+            margin-top: 0; 
+            display: flex; 
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* --- BOTONERA --- */
+        .cloud-section {
+            background: rgba(0,0,0,0.3);
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid var(--pc-blue-light);
+            margin-bottom: 20px;
+        }
+
+        .btn-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .btn-action {
+            color: white;
+            border: 1px solid white;
+            font-size: 10px;
+            padding: 10px;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-weight: bold;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: 0.2s;
+            text-decoration: none;
+        }
+
+        .btn-save-cloud { background: #0056b3; border-color: var(--pc-cyan); }
+        .btn-load-cloud { background: #4527a0; border-color: #7c4dff; }
+        .btn-copy-code { background: #2e7d32; border-color: #69f0ae; }
+        .btn-import-code { background: #ef6c00; border-color: #ffd180; }
+        .btn-docs { background: #2b5797; grid-column: span 2; margin-top: 5px; color: var(--pc-gold); border-color: var(--pc-gold); }
+
+        .btn-action:hover { opacity: 0.8; transform: scale(1.02); }
+
+        /* --- SELECTOR Y FILAS --- */
+        .jornada-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255,255,255,0.05);
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+
+        select { background: #000; color: #fff; border: 1px solid var(--pc-blue-light); padding: 5px; font-weight: bold; }
+
+        .match-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px;
+            margin-bottom: 6px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 4px;
+            border-left: 4px solid transparent;
+        }
+        .match-row.completed { border-left-color: var(--pc-gold); background: rgba(255,215,0,0.05); }
+
+        .score-input {
+            width: 45px; height: 35px; text-align: center; font-size: 20px; font-weight: bold;
+            border: 2px solid var(--pc-blue-light); border-radius: 4px;
+        }
+
+        /* --- TABLA --- */
+        table { width: 100%; border-collapse: collapse; }
+        th { background: var(--pc-blue-dark); color: var(--pc-gold); padding: 12px 5px; font-size: 12px; }
+        td { padding: 10px 5px; text-align: center; border-bottom: 1px solid rgba(90, 140, 184, 0.2); font-size: 14px; }
+        .pos-1 { background: rgba(255, 215, 0, 0.1); color: var(--pc-gold); font-weight: bold; }
+        .pts-col { color: var(--pc-gold); font-weight: bold; font-size: 16px; }
+
+        #sync-label { font-size: 10px; text-transform: none; font-weight: normal; color: var(--pc-cyan); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="fixtures-panel">
+        <h2>CENTRAL DE DATOS <span id="sync-label">Listo</span></h2>
+        
+        <div class="cloud-section">
+            <div class="btn-grid">
+                <button class="btn-action btn-save-cloud" onclick="saveToCloud()">
+                    <i class="fas fa-cloud-upload-alt"></i> GUARDAR NUBE
+                </button>
+                <button class="btn-action btn-load-cloud" onclick="loadFromCloud()">
+                    <i class="fas fa-cloud-download-alt"></i> CARGAR NUBE
+                </button>
+                
+                <button class="btn-action btn-copy-code" onclick="exportarCodigo()">
+                    <i class="fas fa-copy"></i> COPIAR CÓDIGO
+                </button>
+                <button class="btn-action btn-import-code" onclick="importarCodigo()">
+                    <i class="fas fa-paste"></i> PEGAR CÓDIGO
+                </button>
+
+                <a href="https://docs.google.com/document/d/1LuO4fxi0QphqnF06ka_F9b65K0jcuyK5/edit" 
+                   target="_blank" class="btn-action btn-docs">
+                    <i class="fas fa-external-link-alt"></i> ABRIR HISTORIAL (GOOGLE DOCS)
+                </a>
+            </div>
+        </div>
+
+        <div class="jornada-nav">
+            <span>Jornada: <select id="jornadaSelect" onchange="renderMatches()"></select></span>
+            <button onclick="resetLiga()" style="background:none; border:none; color:#ff4444; cursor:pointer; font-size:10px;">BORRAR TODO</button>
+        </div>
+        
+        <div id="matchesContainer"></div>
+    </div>
+
+    <div class="table-panel">
+        <h2>CLASIFICACIÓN LIGA 2026</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>POS</th><th style="text-align:left; padding-left:10px;">EQUIPO</th>
+                    <th>PJ</th><th>PG</th><th>PE</th><th>PP</th><th>GF</th><th>GC</th><th>DG</th><th>PTS</th>
+                </tr>
+            </thead>
+            <tbody id="leagueTable"></tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    // ==========================================
+    // CONFIGURACIÓN: PEGA AQUÍ TUS DATOS DE JSONBIN
+    // ==========================================
+    const CLOUD_CONFIG = {
+        masterKey: '$2a$10$26PEKgZLn/Xrvj382g.aLuqVvown/bA8vqbabwSAPpPYLnPZx/oku', 
+        binId: '69aca9aeae596e708f6ac02c' 
+    };
+
+    const equiposArr = ["Valencia", "Atlético", "Barcelona", "R.Betis", "R.Madrid", "Villarreal", "Sevilla", "Athletic"];
+    
+    // Estructura de calendario basada en tus imágenes
+    let leagueData = { 
+        matches: [
+            [["R.Betis","Valencia"], ["Villarreal","Sevilla"], ["R.Madrid","Atlético"], ["Athletic","Barcelona"]], 
+            [["Villarreal","R.Madrid"], ["Sevilla","Barcelona"], ["Valencia","Athletic"], ["Atlético","R.Betis"]], 
+            [["Athletic","Sevilla"], ["Valencia","Atlético"], ["R.Madrid","Barcelona"], ["R.Betis","Villarreal"]], 
+            [["Atlético","Athletic"], ["Barcelona","R.Betis"], ["Villarreal","Valencia"], ["Sevilla","R.Madrid"]], 
+            [["Valencia","Barcelona"], ["R.Betis","Sevilla"], ["Atlético","Villarreal"], ["R.Madrid","Athletic"]], 
+            [["Barcelona","Atlético"], ["Athletic","Villarreal"], ["R.Madrid","R.Betis"], ["Sevilla","Valencia"]], 
+            [["R.Betis","Athletic"], ["Villarreal","Barcelona"], ["Atlético","Sevilla"], ["Valencia","R.Madrid"]], 
+            [["Valencia","R.Betis"], ["Sevilla","Villarreal"], ["Atlético","R.Madrid"], ["Barcelona","Athletic"]], 
+            [["R.Madrid","Villarreal"], ["Barcelona","Sevilla"], ["Athletic","Valencia"], ["R.Betis","Atlético"]], 
+            [["Sevilla","Athletic"], ["Atlético","Valencia"], ["Barcelona","R.Madrid"], ["Villarreal","R.Betis"]], 
+            [["Athletic","Atlético"], ["R.Betis","Barcelona"], ["Valencia","Villarreal"], ["R.Madrid","Sevilla"]], 
+            [["Barcelona","Valencia"], ["Sevilla","R.Betis"], ["Villarreal","Atlético"], ["Athletic","R.Madrid"]], 
+            [["Atlético","Barcelona"], ["Villarreal","Athletic"], ["R.Betis","R.Madrid"], ["Valencia","Sevilla"]], 
+            [["Athletic","R.Betis"], ["Barcelona","Villarreal"], ["Sevilla","Atlético"], ["R.Madrid","Valencia"]]  
+        ].map(j => j.map(m => ({ home: m[0], away: m[1], gH: null, gA: null }))),
+        teams: {}
+    };
+
+    // --- FUNCIONES NUBE DIRECTA ---
+
+    async function saveToCloud() {
+        const label = document.getElementById('sync-label');
+        label.innerText = "Guardando en la nube...";
+        try {
+            const res = await fetch(`https://api.jsonbin.io/v3/b/${CLOUD_CONFIG.binId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', 'X-Master-Key': CLOUD_CONFIG.masterKey },
+                body: JSON.stringify(leagueData.matches)
+            });
+            if(res.ok) { alert("¡Nube actualizada!"); label.innerText = "Sincronizado"; }
+        } catch (e) { alert("Error al conectar con el servidor"); label.innerText = "Error"; }
+    }
+
+    async function loadFromCloud() {
+        const label = document.getElementById('sync-label');
+        label.innerText = "Cargando...";
+        try {
+            const res = await fetch(`https://api.jsonbin.io/v3/b/${CLOUD_CONFIG.binId}/latest`, {
+                headers: { 'X-Master-Key': CLOUD_CONFIG.masterKey }
+            });
+            const data = await res.json();
+            if(data.record) {
+                leagueData.matches = data.record;
+                calculateTable(); renderMatches();
+                label.innerText = "Datos recuperados";
+            }
+        } catch (e) { alert("Error al descargar datos"); }
+    }
+
+    // --- FUNCIONES DE CÓDIGO (BACKUP MANUAL) ---
+
+    function exportarCodigo() {
+        const codigo = btoa(JSON.stringify(leagueData.matches));
+        navigator.clipboard.writeText(codigo).then(() => {
+            alert("Código de backup copiado al portapapeles. Puedes guardarlo en tu Google Doc.");
+        });
+    }
+
+    function importarCodigo() {
+        const codigo = prompt("Pega el código de backup aquí:");
+        if (codigo) {
+            try {
+                leagueData.matches = JSON.parse(atob(codigo));
+                saveLocal(); calculateTable(); renderMatches();
+                alert("Partida cargada desde código.");
+            } catch (e) { alert("Código inválido."); }
+        }
+    }
+
+    // --- MOTOR DE LIGA ---
+
+    function saveLocal() {
+        localStorage.setItem('pcfutbol_final_save', JSON.stringify(leagueData.matches));
+    }
+
+    function updateScore(j, m, s, v) {
+        const n = v === "" ? null : parseInt(v);
+        if (s === 'H') leagueData.matches[j][m].gH = n; else leagueData.matches[j][m].gA = n;
+        saveLocal();
+        calculateTable();
+        renderMatches();
+    }
+
+    function calculateTable() {
+        equiposArr.forEach(id => leagueData.teams[id] = { pj:0, pg:0, pe:0, pp:0, gf:0, gc:0, pts:0 });
+        leagueData.matches.forEach(j => j.forEach(m => {
+            if (m.gH !== null && m.gA !== null) {
+                const h = leagueData.teams[m.home], a = leagueData.teams[m.away];
+                h.pj++; a.pj++; h.gf += m.gH; h.gc += m.gA; a.gf += m.gA; a.gc += m.gH;
+                if (m.gH > m.gA) { h.pg++; h.pts += 3; a.pp++; }
+                else if (m.gA > m.gH) { a.pg++; a.pts += 3; h.pp++; }
+                else { h.pe++; a.pe++; h.pts += 1; a.pts += 1; }
+            }
+        }));
+        renderTable();
+    }
+
+    function renderMatches() {
+        const jIdx = document.getElementById('jornadaSelect').value - 1;
+        const container = document.getElementById('matchesContainer');
+        container.innerHTML = '';
+        leagueData.matches[jIdx].forEach((m, mIdx) => {
+            const isDone = m.gH !== null && m.gA !== null;
+            container.innerHTML += `
+                <div class="match-row ${isDone ? 'completed' : ''}">
+                    <span style="width:80px; text-align:right; font-weight:bold">${m.home}</span>
+                    <input type="number" class="score-input" value="${m.gH !== null ? m.gH : ''}" onchange="updateScore(${jIdx},${mIdx},'H',this.value)">
+                    <span style="color:var(--pc-gold); font-weight:bold">vs</span>
+                    <input type="number" class="score-input" value="${m.gA !== null ? m.gA : ''}" onchange="updateScore(${jIdx},${mIdx},'A',this.value)">
+                    <span style="width:80px; text-align:left; font-weight:bold">${m.away}</span>
+                </div>`;
+        });
+    }
+
+function renderTable() {
+        const tbody = document.getElementById('leagueTable');
+        const sorted = Object.keys(leagueData.teams).sort((a,b) => {
+            const tA = leagueData.teams[a], tB = leagueData.teams[b];
+            
+            // 1. Puntos (de mayor a menor)
+            if (tB.pts !== tA.pts) return tB.pts - tA.pts;
+            
+            // 2. Diferencia de goles (DG)
+            const diffA = tA.gf - tA.gc;
+            const diffB = tB.gf - tB.gc;
+            if (diffB !== diffA) return diffB - diffA;
+            
+            // 3. Goles a favor (GF)
+            if (tB.gf !== tA.gf) return tB.gf - tA.gf;
+            
+            // 4. Partidos ganados (PG)
+            return tB.pg - tA.pg;
+        });
+        
+        tbody.innerHTML = '';
+        // ... (el resto del código de la función se queda igual)
+
+
+        sorted.forEach((id, i) => {
+            const t = leagueData.teams[id];
+            tbody.innerHTML += `<tr class="${i===0?'pos-1':''}">
+                <td>${i+1}</td><td style="text-align:left; padding-left:10px">${id}</td>
+                <td>${t.pj}</td><td>${t.pg}</td><td>${t.pe}</td><td>${t.pp}</td>
+                <td>${t.gf}</td><td>${t.gc}</td><td>${t.gf-t.gc}</td><td class="pts-col">${t.pts}</td>
+            </tr>`;
+        });
+    }
+
+    function resetLiga() { if (confirm("¿Reiniciar toda la temporada?")) { localStorage.clear(); location.reload(); } }
+
+    window.onload = () => {
+        const sel = document.getElementById('jornadaSelect');
+        for(let i=1; i<=14; i++) sel.innerHTML += `<option value="${i}">Jornada ${i}</option>`;
+        const saved = localStorage.getItem('pcfutbol_final_save');
+        if(saved) leagueData.matches = JSON.parse(saved);
+        calculateTable(); renderMatches();
+    };
+</script>
+</body>
+</html>

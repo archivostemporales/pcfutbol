@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>PC FÚTBOL 2026</title>
+    <style>
+        :root {
+            --pcf-gold: #f1c40f;
+            --pcf-green: #1a472a;
+        }
+
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            overflow: hidden; background: #000;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Fondo con degradado tipo gala */
+        .video-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at center, #1a472a 0%, #000 100%);
+            z-index: -1;
+        }
+
+        /* Pantalla de bloqueo inicial (para activar audio) */
+        #start-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; justify-content: center; align-items: center;
+            background: #000; z-index: 100; cursor: pointer;
+            transition: opacity 0.8s ease;
+        }
+
+        .blink-text {
+            color: var(--pcf-gold);
+            font-size: 1.5em;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            animation: blink 2s infinite;
+        }
+
+        /* Contenedor Interfaz Principal */
+        #main-ui {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 1.5s ease;
+        }
+
+        .logo-container {
+            text-align: center;
+            animation: float 4s ease-in-out infinite;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 6em; margin: 0; color: #fff;
+            text-shadow: 0 0 30px rgba(241, 196, 15, 0.4);
+            letter-spacing: -2px;
+        }
+
+        h1 span { color: var(--pcf-gold); }
+
+        .subtitle {
+            font-size: 1.4em; color: var(--pcf-gold);
+            letter-spacing: 12px; text-transform: uppercase;
+            margin-top: -10px; display: block;
+        }
+
+        /* BOTÓN CORREGIDO */
+        .btn-enter {
+            margin-top: 60px;
+            padding: 18px 60px;
+            font-size: 1.3em;
+            font-weight: 900;
+            color: #fff;
+            background: linear-gradient(to bottom, #1a472a, #0d2516);
+            border: 2px solid var(--pcf-gold);
+            border-radius: 50px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.3s border;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+            z-index: 10; /* Asegura que esté por encima de todo */
+        }
+
+        .btn-enter:hover {
+            transform: translateY(-3px);
+            background: var(--pcf-gold);
+            color: #000;
+            box-shadow: 0 0 30px var(--pcf-gold);
+        }
+
+        /* Animaciones */
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+
+    </style>
+</head>
+<body>
+
+    <audio id="bg-music" src="music.mp3" loop></audio>
+
+    <div id="start-screen" onclick="iniciarProyecto()">
+        <div class="blink-text">Haga clic para iniciar</div>
+    </div>
+
+    <div class="video-bg"></div>
+
+    <div id="main-ui">
+        <div class="logo-container">
+            <h1>PC<span>FÚTBOL</span></h1>
+            <span class="subtitle">2026</span>
+        </div>
+
+        <button class="btn-enter" onclick="irAlMenu()">Empezar Partida</button>
+        
+        <p style="color: rgba(255,255,255,0.3); margin-top: 80px; font-size: 0.7em; letter-spacing: 2px;">
+            VERSIÓN QUINTERO PRO - UTRERA 2026
+        </p>
+    </div>
+
+    <script>
+        // Función 1: Activa música y quita la cortina negra
+        function iniciarProyecto() {
+            const musica = document.getElementById('bg-music');
+            const pantallaNegra = document.getElementById('start-screen');
+            const interfaz = document.getElementById('main-ui');
+
+            // Intentar reproducir música
+            musica.play().catch(error => {
+                console.log("El navegador bloqueó el audio inicialmente:", error);
+            });
+
+            // Animación de transición
+            pantallaNegra.style.opacity = '0';
+            interfaz.style.opacity = '1';
+
+            // Eliminar la capa para que no bloquee los clics del botón después
+            setTimeout(() => {
+                pantallaNegra.style.display = 'none';
+            }, 800);
+        }
+
+        // Función 2: El botón de salida
+        function irAlMenu() {
+            console.log("Navegando a menu.html...");
+            window.location.href = 'menu.html';
+        }
+    </script>
+</body>
+</html>
