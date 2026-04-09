@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>PC FÚTBOL 2026 - Mercado de Fichajes</title>
+    <script src="basedatos.js"></script>
+    <style>
+        :root {
+            --pcf-green: #1a472a; --pcf-gold: #f1c40f; --pcf-dark: #0a1f14;
+            --pcf-red: #ff4d4d; --pcf-text: #2ecc71; --pcf-blue: #3498db;
+        }
+        body { 
+            background: #000; color: white; font-family: 'Courier New', monospace; 
+            margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; 
+        }
+        .market-container { 
+            width: 1050px; background: var(--pcf-green); border: 5px solid var(--pcf-gold); 
+            padding: 30px; border-radius: 10px; box-shadow: 0 0 40px rgba(0,0,0,0.8);
+        }
+        .screen { display: none; }
+        .active { display: block; }
+
+        .intro-box { text-align: center; padding: 60px; border: 2px dashed var(--pcf-gold); background: var(--pcf-dark); }
+        .btn-pcf { 
+            background: var(--pcf-gold); color: black; border: none; padding: 18px 35px; 
+            font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 1.1em; 
+            margin-top: 20px; transition: 0.2s; border: 2px solid transparent;
+        }
+        .btn-pcf:hover { background: #fff; border-color: var(--pcf-gold); }
+
+        .market-header { 
+            display: flex; justify-content: space-between; align-items: center; 
+            background: var(--pcf-dark); padding: 15px; border: 2px solid var(--pcf-gold); margin-bottom: 20px; 
+        }
+        table { width: 100%; border-collapse: collapse; background: rgba(0,0,0,0.8); }
+        th { 
+            background: var(--pcf-dark); color: var(--pcf-gold); padding: 12px; 
+            border: 1px solid var(--pcf-gold); font-size: 0.75em; cursor: pointer;
+            transition: 0.2s;
+        }
+        th:hover { background: #222; color: #fff; }
+        td { padding: 10px 5px; border: 1px solid rgba(241, 196, 15, 0.2); text-align: center; font-size: 0.9em; }
+        
+        .pos-badge { font-weight: bold; padding: 2px 6px; border-radius: 3px; font-size: 0.8em; display: inline-block; width: 30px; }
+        .POR { background: #e67e22; color: white; }
+        .DEF { background: var(--pcf-blue); color: white; }
+        .MED { background: var(--pcf-text); color: black; }
+        .DEL { background: var(--pcf-red); color: white; }
+        
+        .btn-fichar { background: var(--pcf-text); border: none; padding: 5px 10px; font-weight: bold; cursor: pointer; color: black; }
+        .valor { color: var(--pcf-gold); font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="market-container">
+    <div id="scr-intro" class="screen active">
+        <div class="intro-box">
+            <h1 style="color: var(--pcf-gold); margin: 0;">SECRETARÍA TÉCNICA</h1>
+            <p>Se han recibido nuevas ofertas de representantes.</p>
+            <button class="btn-pcf" onclick="iniciarMercado()">VER OFERTAS DEL DÍA</button>
+            <br>
+            <button class="btn-pcf" style="background: #444; color: white; font-size: 0.8em;" onclick="window.location.href='fichajes.html'">VOLVER AL MENÚ</button>
+        </div>
+    </div>
+
+    <div id="scr-market" class="screen">
+        <div class="market-header">
+            <div>
+                <h2 style="margin:0; color: var(--pcf-gold);">MERCADO DE FICHAJES</h2>
+                <small style="color: #aaa;">Ordenado por Media de Mercado (6 Stats + Fama)</small>
+            </div>
+            <button class="btn-pcf" style="margin:0; padding: 10px;" onclick="location.reload()">NUEVA BÚSQUEDA</button>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th onclick="ordenar('pos')">POS</th>
+                    <th onclick="ordenar('nombre')">NOMBRE</th>
+                    <th onclick="ordenar('rit')">RIT</th>
+                    <th onclick="ordenar('tir')">TIR</th>
+                    <th onclick="ordenar('pas')">PAS</th>
+                    <th onclick="ordenar('reg')">REG</th>
+                    <th onclick="ordenar('def')">DEF</th>
+                    <th onclick="ordenar('fis')">FIS</th>
+                    <th onclick="ordenar('med')">FAMA</th>
+                    <th onclick="ordenar('precio')">PRECIO ↕</th>
+                    <th>ACCIÓN</th>
+                </tr>
+            </thead>
+            <tbody id="lista-fichajes"></tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    let seleccionActual = [];
+
+    // Función clave: Calcula la media real incluyendo el campo 'med' del JS como Fama
+    function calcularMediaMercado(j) {
+        const sumaHabs = j.rit + j.tir + j.pas + j.reg + j.def + j.fis;
+        const fama = j.med; // El campo 'med' del JS
+        return Math.floor((sumaHabs + fama) / 7);
+    }
+
+    function iniciarMercado() {
+        const db = typeof plantillaBase !== 'undefined' ? plantillaBase : [];
+        if (db.length === 0) return alert("Base de datos no encontrada");
+
+        const filtrar = (p, cant) => db.filter(j => j.pos === p).sort(() => 0.5 - Math.random()).slice(0, cant);
+
+        seleccionActual = [
+            ...filtrar("POR", 4),
+            ...filtrar("DEF", 4),
+            ...filtrar("MED", 8),
+            ...filtrar("DEL", 4)
+        ];
+
+        document.getElementById('scr-intro').classList.remove('active');
+        document.getElementById('scr-market').classList.add('active');
+        dibujarTabla();
+    }
+
+    function ordenar(propiedad) {
+        seleccionActual.sort((a, b) => {
+            let valA, valB;
+
+            if (propiedad === 'precio') {
+                valA = calcularMediaMercado(a);
+                valB = calcularMediaMercado(b);
+            } else {
+                valA = a[propiedad];
+                valB = b[propiedad];
+            }
+
+            if (typeof valA === 'string') return valA.localeCompare(valB);
+            return valB - valA;
+        });
+        dibujarTabla();
+    }
+
+    function dibujarTabla() {
+        const tbody = document.getElementById('lista-fichajes');
+        tbody.innerHTML = "";
+
+        seleccionActual.forEach(j => {
+            // Calculamos la media de mercado (7 factores)
+            const medMercado = calcularMediaMercado(j);
+            // Aplicamos tu fórmula sobre esa nueva media
+            const precioNum = medMercado * medMercado * 15000;
+            const precioTexto = precioNum.toLocaleString('es-ES') + " €";
+            
+            tbody.innerHTML += `
+                <tr>
+                    <td><span class="pos-badge ${j.pos}">${j.pos}</span></td>
+                    <td style="text-align:left; padding-left:15px; font-weight:bold;">${j.nombre}</td>
+                    <td>${j.rit}</td>
+                    <td>${j.tir}</td>
+                    <td>${j.pas}</td>
+                    <td>${j.reg}</td>
+                    <td>${j.def}</td>
+                    <td>${j.fis}</td>
+                    <td style="color:#3498db; font-weight:bold;">${j.med}</td>
+                    <td class="valor">${precioTexto}</td>
+                    <td><button class="btn-fichar" onclick="fichar('${j.nombre}')">FICHAR</button></td>
+                </tr>
+            `;
+        });
+    }
+
+    function fichar(nombre) {
+        alert("Negociando con el representante de " + nombre);
+    }
+</script>
+</body>
+</html>

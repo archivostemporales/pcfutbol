@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>PC FÚTBOL 2026 - Compra de Jugador</title>
+    <script src="basedatos.js"></script>
+    <style>
+        :root {
+            --pcf-green: #1a472a; --pcf-gold: #f1c40f; --pcf-dark: #0a1f14;
+            --pcf-text: #2ecc71; --pcf-blue: #3498db;
+        }
+        body { 
+            background: #000; color: white; font-family: 'Courier New', monospace; 
+            margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; 
+        }
+        .container { 
+            width: 900px; background: var(--pcf-green); border: 5px solid var(--pcf-gold); 
+            padding: 30px; border-radius: 10px; box-shadow: 0 0 40px #000;
+        }
+        .header { background: var(--pcf-dark); padding: 15px; border: 2px solid var(--pcf-gold); text-align: center; margin-bottom: 25px; }
+        
+        /* SELECTOR DESPLEGABLE */
+        .selector-box { margin-bottom: 25px; }
+        select#lista-jugadores { 
+            width: 100%; padding: 15px; background: #000; color: var(--pcf-gold); 
+            border: 3px solid var(--pcf-gold); font-family: 'Courier New'; font-size: 1.2em;
+            cursor: pointer; font-weight: bold; outline: none;
+        }
+        select#lista-jugadores option { background: var(--pcf-dark); }
+
+        .flex-layout { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 20px; }
+        
+        /* FICHA TÉCNICA */
+        .ficha { background: rgba(0,0,0,0.6); border: 1px solid var(--pcf-gold); padding: 20px; min-height: 350px; }
+        .stat-row { display: flex; justify-content: space-between; margin-bottom: 12px; border-bottom: 1px solid rgba(241,196,15,0.1); padding-bottom: 5px; }
+        .stat-name { color: var(--pcf-gold); font-weight: bold; font-size: 0.9em; }
+        .stat-val { color: white; font-weight: bold; font-size: 1.1em; }
+        .fama-val { color: var(--pcf-blue); font-size: 1.2em; }
+
+        /* PANEL ECONÓMICO */
+        .price-panel { 
+            background: var(--pcf-dark); border: 2px solid var(--pcf-gold); 
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            text-align: center; padding: 20px;
+        }
+        .big-med { font-size: 5em; color: var(--pcf-text); font-weight: bold; line-height: 1em; margin: 10px 0; }
+        .big-price { font-size: 2.2em; color: var(--pcf-gold); font-weight: bold; margin-bottom: 20px; }
+
+        .btn { 
+            width: 100%; padding: 18px; cursor: pointer; font-family: 'Courier New';
+            font-weight: bold; text-transform: uppercase; border: none; font-size: 1em;
+        }
+        .btn-buy { background: var(--pcf-text); color: black; }
+        .btn-buy:hover { background: #fff; }
+        .btn-back { background: #444; color: white; margin-top: 15px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1 style="color: var(--pcf-gold); margin: 0; letter-spacing: 2px;">DEPARTAMENTO DE FICHAJES</h1>
+        <p style="margin:5px 0 0 0; font-size: 0.8em; color: #aaa;">SELECCIÓN DE JUGADORES POR BASE DE DATOS</p>
+    </div>
+
+    <div class="selector-box">
+        <select id="lista-jugadores" onchange="cargarJugador()">
+            <option value="">-- SELECCIONA UN JUGADOR PARA TASAR --</option>
+            </select>
+    </div>
+
+    <div class="flex-layout">
+        <div class="ficha">
+            <h2 id="disp-nombre" style="color:var(--pcf-gold); margin-top:0; border-bottom: 2px solid var(--pcf-gold); padding-bottom: 10px;">---</h2>
+            <div class="stat-row"><span class="stat-name">POSICIÓN</span><span id="disp-pos" class="stat-val">--</span></div>
+            <div class="stat-row"><span class="stat-name">RITMO</span><span id="disp-rit" class="stat-val">0</span></div>
+            <div class="stat-row"><span class="stat-name">TIRO</span><span id="disp-tir" class="stat-val">0</span></div>
+            <div class="stat-row"><span class="stat-name">PASE</span><span id="disp-pas" class="stat-val">0</span></div>
+            <div class="stat-row"><span class="stat-name">REGATE</span><span id="disp-reg" class="stat-val">0</span></div>
+            <div class="stat-row"><span class="stat-name">DEFENSA</span><span id="disp-def" class="stat-val">0</span></div>
+            <div class="stat-row"><span class="stat-name">FÍSICO</span><span id="disp-fis" class="stat-val">0</span></div>
+            <div class="stat-row" style="margin-top:15px; padding-top:10px; border-top: 2px dashed #444;">
+                <span class="stat-name" style="color:var(--pcf-blue)">FAMA (STAT JS)</span>
+                <span id="disp-fama" class="stat-val fama-val">0</span>
+            </div>
+        </div>
+
+        <div class="price-panel">
+            <span style="color:var(--pcf-gold); font-size: 0.8em; font-weight: bold;">MEDIA DE MERCADO (/7)</span>
+            <div id="res-med" class="big-med">--</div>
+            
+            <div id="res-precio" class="big-price">0 €</div>
+            
+            <button class="btn btn-buy" onclick="confirmarCompra()">EFECTUAR FICHAJE</button>
+            <button class="btn btn-back" onclick="window.location.href='fichajes.html'">VOLVER AL MENÚ</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Al cargar la página, llenamos el desplegable con el archivo basedatos.js
+    window.onload = () => {
+        const select = document.getElementById('lista-jugadores');
+        const db = typeof plantillaBase !== 'undefined' ? plantillaBase : [];
+        
+        // Ordenamos alfabéticamente para que sea cómodo elegir
+        const dbOrdenada = [...db].sort((a, b) => a.nombre.localeCompare(b.nombre));
+
+        dbOrdenada.forEach(j => {
+            const opt = document.createElement('option');
+            opt.value = j.nombre;
+            opt.innerText = j.nombre + " (" + j.pos + ")";
+            select.appendChild(opt);
+        });
+    };
+
+    function cargarJugador() {
+        const nombreSel = document.getElementById('lista-jugadores').value;
+        const db = plantillaBase;
+        const j = db.find(jug => jug.nombre === nombreSel);
+
+        if (j) {
+            // Rellenamos la ficha visual
+            document.getElementById('disp-nombre').innerText = j.nombre;
+            document.getElementById('disp-pos').innerText = j.pos;
+            document.getElementById('disp-rit').innerText = j.rit;
+            document.getElementById('disp-tir').innerText = j.tir;
+            document.getElementById('disp-pas').innerText = j.pas;
+            document.getElementById('disp-reg').innerText = j.reg;
+            document.getElementById('disp-def').innerText = j.def;
+            document.getElementById('disp-fis').innerText = j.fis;
+            document.getElementById('disp-fama').innerText = j.med;
+
+            // LÓGICA DE 7 FACTORES (6 stats + fama)
+            const sumaTotal = j.rit + j.tir + j.pas + j.reg + j.def + j.fis + j.med;
+            const mediaMercado = Math.floor(sumaTotal / 7);
+            const precioFinal = mediaMercado * mediaMercado * 15000;
+
+            document.getElementById('res-med').innerText = mediaMercado;
+            document.getElementById('res-precio').innerText = precioFinal.toLocaleString('es-ES') + " €";
+        } else {
+            limpiarFicha();
+        }
+    }
+
+    function limpiarFicha() {
+        document.getElementById('disp-nombre').innerText = "---";
+        document.getElementById('res-med').innerText = "--";
+        document.getElementById('res-precio').innerText = "0 €";
+    }
+
+    function confirmarCompra() {
+        const nombre = document.getElementById('disp-nombre').innerText;
+        const precio = document.getElementById('res-precio').innerText;
+        
+        if(nombre === "---") return alert("Por favor, selecciona un jugador.");
+        
+        if(confirm("¿Confirmar el traspaso de " + nombre + " por " + precio + "?")) {
+            alert("¡OPERACIÓN COMPLETADA! El jugador se ha unido a tu equipo.");
+            location.reload();
+        }
+    }
+</script>
+
+</body>
+</html>

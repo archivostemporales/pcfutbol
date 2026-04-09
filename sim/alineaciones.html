@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Alineaciones - PC FÚTBOL 2026</title>
+    <style>
+        :root {
+            --pcf-green: #1a472a; --pcf-gold: #f1c40f; --pcf-dark: #0a1f14;
+            --pcf-text: #2ecc71; --pcf-bg: #000; --pcf-blue: #3498db; --pcf-red: #ff4d4d;
+        }
+        body { background: #000; color: white; font-family: 'Courier New', monospace; margin: 0; padding: 20px; display: flex; justify-content: center; }
+        .container { width: 1050px; background: var(--pcf-green); border: 4px solid var(--pcf-gold); padding: 20px; }
+        
+        /* SELECTOR */
+        #pantalla-seleccion { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+        .card { background: var(--pcf-dark); border: 2px solid var(--pcf-gold); padding: 15px; text-align: center; cursor: pointer; }
+        .card:hover { border-color: white; background: #111; }
+        .card img { width: 70px; height: 70px; margin-bottom: 10px; }
+        
+        /* JUEGO */
+        #pantalla-juego { display: none; }
+        .header { display: flex; align-items: center; justify-content: space-between; background: var(--pcf-dark); padding: 15px; border: 2px solid var(--pcf-gold); margin-bottom: 20px; }
+        .media-val { font-size: 2.5em; color: var(--pcf-gold); font-weight: bold; }
+        
+        table { width: 100%; border-collapse: collapse; background: rgba(0,0,0,0.6); }
+        th { background: var(--pcf-dark); color: var(--pcf-gold); padding: 8px; border: 1px solid var(--pcf-gold); font-size: 0.7em; }
+        td { padding: 8px 5px; border: 1px solid rgba(241, 196, 15, 0.2); text-align: center; cursor: pointer; }
+        .selected { background: var(--pcf-gold) !important; color: #000 !important; }
+        .penalizado { color: var(--pcf-red) !important; font-weight: bold; }
+        .btn-volver { background: var(--pcf-dark); color: var(--pcf-gold); border: 2px solid var(--pcf-gold); padding: 10px; cursor: pointer; margin-bottom: 10px; font-weight: bold; }
+
+        /* Estilo para el botón de navegación inferior */
+        .footer-nav { text-align: center; margin-top: 30px; border-top: 2px dashed var(--pcf-gold); padding-top: 20px; width: 100%; }
+        .btn-pcf-nav { 
+            display: inline-block;
+            background: var(--pcf-gold); 
+            color: black; 
+            border: none; 
+            padding: 12px 30px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            text-transform: uppercase; 
+            font-family: 'Courier New', monospace;
+            box-shadow: 0 4px 0 #b7950b;
+            text-decoration: none;
+        }
+        .btn-pcf-nav:hover { background: white; }
+        .btn-pcf-nav:active { transform: translateY(2px); box-shadow: 0 2px 0 #b7950b; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="pantalla-seleccion">
+        <h1 style="grid-column: span 4; text-align: center; color: var(--pcf-gold);">SELECCIONA EQUIPO</h1>
+    </div>
+
+    <div id="pantalla-juego">
+        <button class="btn-volver" onclick="location.reload()">← CAMBIAR EQUIPO</button>
+        <div class="header">
+            <img id="esc-l" src="" width="60">
+            <div style="text-align: center;">
+                <h1 id="txt-club" style="margin:0; color: var(--pcf-gold);">NOMBRE</h1>
+                <div class="media-val">MEDIA: <span id="val-media">00</span></div>
+            </div>
+            <img id="esc-r" src="" width="60">
+        </div>
+
+        <div style="background:var(--pcf-dark); color:var(--pcf-gold); padding:5px; font-weight:bold;">TITULARES</div>
+        <table id="tab-tit">
+            <thead>
+                <tr><th>PUESTO</th><th>NOMBRE</th><th>POS</th><th>RIT</th><th>TIR</th><th>PAS</th><th>REG</th><th>DEF</th><th>FIS</th><th>MED</th></tr>
+            </thead>
+            <tbody id="body-tit"></tbody>
+        </table>
+
+        <div style="background:var(--pcf-dark); color:var(--pcf-gold); padding:5px; font-weight:bold; margin-top:10px;">BANQUILLO</div>
+        <table id="tab-sup">
+            <thead>
+                <tr><th>NOMBRE</th><th>POS</th><th>RIT</th><th>TIR</th><th>PAS</th><th>REG</th><th>DEF</th><th>FIS</th><th>MED</th></tr>
+            </thead>
+            <tbody id="body-sup"></tbody>
+        </table>
+    </div>
+
+    <div class="footer-nav">
+        <button class="btn-pcf-nav" onclick="window.location.href='../espana.html'">
+            TÁCTICAS
+        </button>
+        <button class="btn-pcf-nav" onclick="window.location.href='../menu.html'">
+            VOLVER AL MENÚ PRINCIPAL
+        </button>
+    </div>
+</div>
+
+<script>
+    const equipos = [
+        { id: 'madrid', nombre: 'Real Madrid', js: 'realmadrid.js', img: 'escudos/realmadrid.png' },
+        { id: 'barcelona', nombre: 'FC Barcelona', js: 'barcelona.js', img: 'escudos/barcelona.png' },
+        { id: 'atletico', nombre: 'Atlético de Madrid', js: 'atletico.js', img: 'escudos/atletico.png' },
+        { id: 'athletic', nombre: 'Athletic Club', js: 'athletic.js', img: 'escudos/athletic.png' },
+        { id: 'betis', nombre: 'Real Betis', js: 'betis.js', img: 'escudos/realbetis.png' },
+        { id: 'villarreal', nombre: 'Villarreal CF', js: 'villarreal.js', img: 'escudos/villarreal.png' },
+        { id: 'valencia', nombre: 'Valencia CF', js: 'valencia.js', img: 'escudos/valencia.png' },
+        { id: 'sevilla', nombre: 'Sevilla FC', js: 'sevilla.js', img: 'escudos/sevilla.png' },
+        { id: 'arsenal', nombre: 'Arsenal', js: 'arsenal.js', img: 'escudos/arsenal.png' },
+        { id: 'aston_villa', nombre: 'Aston Villa', js: 'aston_villa.js', img: 'escudos/aston_villa.png' },
+        { id: 'chelsea', nombre: 'Chelsea', js: 'chelsea.js', img: 'escudos/chelsea.png' },
+        { id: 'liverpool', nombre: 'Liverpool', js: 'liverpool.js', img: 'escudos/liverpool.png' },
+        { id: 'man_city', nombre: 'Manchester City', js: 'man_city.js', img: 'escudos/man_city.png' },
+        { id: 'man_united', nombre: 'Manchester United', js: 'man_united.js', img: 'escudos/man_united.png' },
+        { id: 'bayern', nombre: 'FC Bayern München', js: 'bayern.js', img: 'escudos/bayern.png' },
+        { id: 'borussia', nombre: 'Borussia Dortmund', js: 'borussia.js', img: 'escudos/borussia.png' },
+        { id: 'inter', nombre: 'FC Inter Milano', js: 'inter.js', img: 'escudos/inter.png' },
+        { id: 'juventus', nombre: 'Juventus FC', js: 'juventus.js', img: 'escudos/juventus.png' },
+        { id: 'milan', nombre: 'AC Milan', js: 'milan.js', img: 'escudos/milan.png' },
+        { id: 'napoli', nombre: 'Napoli', js: 'napoli.js', img: 'escudos/napoli.png' },
+        { id: 'monaco', nombre: 'AS Monaco', js: 'monaco.js', img: 'escudos/monaco.png' },
+        { id: 'psg', nombre: 'Paris Saint-Germain', js: 'psg.js', img: 'escudos/psg.png' },
+        { id: 'benfica', nombre: 'Benfica', js: 'benfica.js', img: 'escudos/benfica.png' },
+        { id: 'galatasaray', nombre: 'Galatasaray', js: 'galatasaray.js', img: 'escudos/galatasaray.png' }
+
+
+
+    ];
+
+    let jugadores = [];
+    let selIdx = null;
+    const esquema = ["POR", "DEF", "MED", "MED", "DEL"];
+
+    window.registrarEquipo = function(data) {
+        jugadores = JSON.parse(JSON.stringify(data));
+        jugadores.forEach((j, i) => j.titular = i < 5);
+        document.getElementById('pantalla-seleccion').style.display = 'none';
+        document.getElementById('pantalla-juego').style.display = 'block';
+        render();
+    };
+
+    const grid = document.getElementById('pantalla-seleccion');
+    equipos.forEach(eq => {
+        const d = document.createElement('div');
+        d.className = 'card';
+        d.innerHTML = `<img src="${eq.img}" onerror="this.src='https://via.placeholder.com/70'"><span>${eq.nombre}</span>`;
+        d.onclick = () => {
+            document.getElementById('txt-club').innerText = eq.nombre.toUpperCase();
+            document.getElementById('esc-l').src = eq.img;
+            document.getElementById('esc-r').src = eq.img;
+            const s = document.createElement('script');
+            s.src = eq.js;
+            document.body.appendChild(s);
+        };
+        grid.appendChild(d);
+    });
+
+    function render() {
+        const bTit = document.getElementById('body-tit');
+        const bSup = document.getElementById('body-sup');
+        bTit.innerHTML = ""; bSup.innerHTML = "";
+let suma = 0;
+let sumaAtributos = 0; // Nueva variable para la suma de las 6 habilidades
+jugadores.forEach((j, idx) => {
+            if(j.titular) {
+                const req = esquema[bTit.rows.length];
+                const pen = j.pos !== req;
+                const calc = (val) => pen ? Math.floor(val / 2) : val;
+                const m = calc(j.med);
+                suma += m;
+// Sumamos las 6 habilidades (usando el valor penalizado si corresponde)
+sumaAtributos += (calc(j.rit) + calc(j.tir) + calc(j.pas) + calc(j.reg) + calc(j.def) + calc(j.fis)) / 6;
+                bTit.innerHTML += `
+                    <tr onclick="picar(${idx})" class="${selIdx === idx ? 'selected' : ''}">
+                        <td>${req}</td>
+                        <td>${j.nombre}</td>
+                        <td>${j.pos}</td>
+                        <td class="${pen ? 'penalizado' : ''}">${calc(j.rit)}</td>
+                        <td class="${pen ? 'penalizado' : ''}">${calc(j.tir)}</td>
+                        <td class="${pen ? 'penalizado' : ''}">${calc(j.pas)}</td>
+                        <td class="${pen ? 'penalizado' : ''}">${calc(j.reg)}</td>
+                        <td class="${pen ? 'penalizado' : ''}">${calc(j.def)}</td>
+                        <td class="${pen ? 'penalizado' : ''}">${calc(j.fis)}</td>
+                        <td class="${pen ? 'penalizado' : ''}" style="font-weight:bold;">${m}</td>
+                    </tr>`;
+            } else {
+                bSup.innerHTML += `
+                    <tr onclick="picar(${idx})" class="${selIdx === idx ? 'selected' : ''}">
+                        <td>${j.nombre}</td>
+                        <td>${j.pos}</td>
+                        <td>${j.rit}</td>
+                        <td>${j.tir}</td>
+                        <td>${j.pas}</td>
+                        <td>${j.reg}</td>
+                        <td>${j.def}</td>
+                        <td>${j.fis}</td>
+                        <td>${j.med}</td>
+                    </tr>`;
+            }
+        });
+const mediaPrincipal = Math.floor(suma/5);
+const mediaHabilidades = Math.floor(sumaAtributos/5);
+document.getElementById('val-media').innerText = `${mediaPrincipal} (${mediaHabilidades})`;
+    }
+
+    function picar(i) {
+        if(selIdx === null) selIdx = i;
+        else {
+            if(selIdx !== i) {
+                let t = jugadores[selIdx].titular;
+                jugadores[selIdx].titular = jugadores[i].titular;
+                jugadores[i].titular = t;
+                let temp = jugadores[selIdx]; jugadores[selIdx] = jugadores[i]; jugadores[i] = temp;
+            }
+            selIdx = null;
+        }
+        render();
+    }
+</script>
+</body>
+</html>

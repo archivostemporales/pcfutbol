@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>PC FÚTBOL 2026 - Sorteo Champions League</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    
+    <style>
+        :root {
+            --pcf-green: #1a472a; --pcf-gold: #f1c40f; --pcf-dark: #0a1f14;
+            --pcf-blue: #004488; --pcf-text: #2ecc71;
+        }
+        body { 
+            background: #000; color: white; font-family: 'Courier New', monospace; 
+            margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh;
+        }
+
+        #overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--pcf-dark); z-index: 100;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            background-image: radial-gradient(circle, #1a472a 0%, #000 80%);
+        }
+
+        .draw-container { 
+            display: none;
+            width: 1100px; background: var(--pcf-green); border: 5px solid var(--pcf-gold); 
+            padding: 25px; border-radius: 10px; box-shadow: 0 0 50px #000;
+        }
+
+        .header { background: var(--pcf-dark); border: 2px solid var(--pcf-gold); text-align: center; padding: 15px; margin-bottom: 20px; }
+        .groups-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 30px; }
+        .group-card { background: rgba(0,0,0,0.8); border: 2px solid var(--pcf-blue); min-height: 220px; }
+        .group-header { background: var(--pcf-blue); color: white; text-align: center; font-weight: bold; padding: 8px; font-size: 1.1em; }
+        
+        .team-slot { padding: 8px 12px; border-bottom: 1px solid #222; height: 35px; display: flex; align-items: center; }
+        .team-content { display: flex; align-items: center; opacity: 0; transform: translateX(-20px); transition: 0.5s ease-out; }
+        .team-content.visible { opacity: 1; transform: translateX(0); }
+
+        .escudo-mini { width: 28px; height: 28px; margin-right: 12px; object-fit: contain; }
+        .team-name { color: var(--pcf-gold); font-weight: bold; font-size: 0.9em; }
+
+        .pots-container { display: flex; justify-content: space-around; background: var(--pcf-dark); padding: 20px; border: 2px solid var(--pcf-gold); }
+        .pot { text-align: center; opacity: 0.3; transition: 0.5s; flex: 1; }
+        .pot.active { opacity: 1; transform: scale(1.05); color: var(--pcf-gold); }
+        .pot-title { font-weight: bold; border-bottom: 2px solid var(--pcf-gold); margin-bottom: 10px; padding-bottom: 5px; }
+        
+        .controls { text-align: center; margin-top: 25px; }
+        .btn-pcf { 
+            background: var(--pcf-gold); color: black; border: none; padding: 15px 40px; 
+            font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 1.1em;
+            box-shadow: 0 4px 0 #b7950b; transition: 0.1s;
+        }
+        .btn-pcf:active { transform: translateY(3px); box-shadow: 0 1px 0 #b7950b; }
+        #btn-pdf { background: #2ecc71; box-shadow: 0 4px 0 #27ae60; display: none; margin-top: 10px; }
+        #status-text { margin-bottom: 15px; font-size: 1.2em; height: 24px; color: var(--pcf-text); font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div id="overlay">
+    <h1 style="color: var(--pcf-gold); font-size: 3.5em; margin-bottom: 10px; letter-spacing: 5px;">PC FÚTBOL 2026</h1>
+    <p style="color: white; margin-bottom: 30px;">SORTEO CHAMPIONS LEAGUE</p>
+    <button class="btn-pcf" onclick="iniciarSorteo()">ENTRAR AL SORTEO</button>
+</div>
+
+<div class="draw-container" id="main-ui">
+    <div class="header">
+        <h1 style="color: var(--pcf-gold); margin: 0; letter-spacing: 3px;">CHAMPIONS LEAGUE</h1>
+        <p style="margin: 5px 0 0 0; color: #fff; font-size: 0.9em;">FASE DE GRUPOS 2026/27</p>
+    </div>
+
+    <div class="groups-grid" id="groups-container"></div>
+
+    <div class="pots-container">
+        <div id="pot-1" class="pot"><div class="pot-title">BOMBO 1</div><div id="list-1" style="font-size: 0.7em; color: #ccc;"></div></div>
+        <div id="pot-2" class="pot"><div class="pot-title">BOMBO 2</div><div id="list-2" style="font-size: 0.7em; color: #ccc;"></div></div>
+        <div id="pot-3" class="pot"><div class="pot-title">BOMBO 3</div><div id="list-3" style="font-size: 0.7em; color: #ccc;"></div></div>
+        <div id="pot-4" class="pot"><div class="pot-title">BOMBO 4</div><div id="list-4" style="font-size: 0.7em; color: #ccc;"></div></div>
+    </div>
+
+    <div class="controls">
+        <div id="status-text">LISTO PARA EMPEZAR</div>
+        <button class="btn-pcf" id="btn-draw" onclick="extraerBola()">EXTRAER BOLA</button>
+        <button class="btn-pcf" id="btn-pdf" onclick="generarFixturePDF()">GENERAR CALENDARIO PDF</button>
+        <button class="btn-pcf" style="background:#444; color:white; margin-left: 10px; box-shadow: 0 4px 0 #222;" onclick="location.reload()">REINICIAR</button>
+    </div>
+</div>
+
+<script>
+    const himno = new Audio('himnos/champions.mp3');
+    const sonidoBombo = new Audio('bombo.mp3');
+
+    const nombresArchivos = {
+        "Real Madrid": "realmadrid", "Manchester City": "man_city", "Atlético de Madrid": "atletico",
+        "Athletic Club": "athletic", "Bayern": "bayern", "Barcelona": "barcelona",
+        "Inter": "inter", "Arsenal": "arsenal", "PSG": "psg", "Liverpool": "liverpool",
+        "Borussia": "borussia", "Chelsea": "chelsea", "Galatasaray": "galatasaray",
+        "Juventus": "juventus", "Benfica": "benfica", "Mónaco": "monaco"
+    };
+
+    const bombos = [
+        ["Real Madrid", "Liverpool", "Manchester City", "PSG"],
+        ["Bayern", "Inter", "Barcelona", "Arsenal"],
+        ["Atlético de Madrid", "Athletic Club", "Borussia", "Chelsea"],
+        ["Galatasaray", "Juventus", "Benfica", "Mónaco"]
+    ];
+
+    const espanoles = ["Real Madrid", "Barcelona", "Atlético de Madrid", "Athletic Club"];
+    let gruposFinales = [[], [], [], []];
+    let bActual = 0; let gActual = 0; let finalizado = false;
+
+    function iniciarSorteo() {
+        document.getElementById('overlay').style.display = 'none';
+        document.getElementById('main-ui').style.display = 'block';
+        himno.volume = 0.4;
+        himno.play();
+        initSorteo();
+    }
+
+    function initSorteo() {
+        const container = document.getElementById('groups-container');
+        for(let i=0; i<4; i++) {
+            container.innerHTML += `
+                <div class="group-card">
+                    <div class="group-header">GRUPO ${String.fromCharCode(65 + i)}</div>
+                    <div class="team-slot"><div id="g${i}-0" class="team-content"></div></div>
+                    <div class="team-slot"><div id="g${i}-1" class="team-content"></div></div>
+                    <div class="team-slot"><div id="g${i}-2" class="team-content"></div></div>
+                    <div class="team-slot"><div id="g${i}-3" class="team-content"></div></div>
+                </div>
+            `;
+        }
+        bombos.forEach((lista, i) => { document.getElementById(`list-${i+1}`).innerHTML = lista.join("<br>"); });
+        actualizarBombosUI();
+        precalcularSorteo();
+    }
+
+    function precalcularSorteo() {
+        let exito = false;
+        while (!exito) {
+            gruposFinales = [[], [], [], []]; exito = true;
+            for (let b = 0; b < 4; b++) {
+                let equiposDis = [...bombos[b]].sort(() => Math.random() - 0.5);
+                let asig = [];
+                for (let g = 0; g < 4; g++) {
+                    let cand = equiposDis.find(e => {
+                        if (asig.includes(e)) return false;
+                        const esEsp = espanoles.includes(e);
+                        const tieneEsp = gruposFinales[g].some(x => espanoles.includes(x));
+                        return !(esEsp && tieneEsp);
+                    });
+                    if (!cand) { exito = false; break; }
+                    gruposFinales[g].push(cand); asig.push(cand);
+                }
+                if (!exito) break;
+            }
+        }
+    }
+
+    function actualizarBombosUI() {
+        for(let i=0; i<4; i++) document.getElementById(`pot-${i+1}`).classList.toggle('active', i === bActual);
+    }
+
+    function extraerBola() {
+        if(finalizado) return;
+        sonidoBombo.currentTime = 0;
+        sonidoBombo.play();
+
+        const btn = document.getElementById('btn-draw');
+        const status = document.getElementById('status-text');
+        btn.disabled = true;
+        
+        const nombreEquipo = gruposFinales[gActual][bActual];
+        const idSlot = `g${gActual}-${bActual}`;
+        status.innerText = `Sorteando Bombo ${bActual + 1}...`;
+
+        setTimeout(() => {
+            const slot = document.getElementById(idSlot);
+            const alias = nombresArchivos[nombreEquipo] || nombreEquipo.toLowerCase().replace(/\s+/g, '_');
+            const imgPath = `escudos/${alias}.png`;
+
+            slot.innerHTML = `
+                <img src="${imgPath}" class="escudo-mini" onerror="this.src='https://via.placeholder.com/25?text=?'">
+                <span class="team-name">${nombreEquipo}</span>
+            `;
+            
+            slot.classList.add('visible');
+            status.innerText = `${nombreEquipo} -> Grupo ${String.fromCharCode(65 + gActual)}`;
+
+            gActual++;
+            if (gActual > 3) { gActual = 0; bActual++; if(bActual < 4) actualizarBombosUI(); }
+            if (bActual > 3) {
+                status.innerText = "¡SORTEO FINALIZADO!";
+                status.style.color = "var(--pcf-gold)";
+                btn.style.display = "none";
+                document.getElementById('btn-pdf').style.display = "inline-block";
+                finalizado = true;
+            } else { btn.disabled = false; }
+        }, 800);
+    }
+
+    // FUNCIÓN PARA GENERAR EL PDF
+    function generarFixturePDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        
+        doc.setFont("courier", "bold");
+        doc.setFontSize(22);
+        doc.text("PC FÚTBOL 2026 - FIXTURE CHAMPIONS", 105, 20, { align: "center" });
+        
+        let finalY = 30;
+
+        gruposFinales.forEach((equipoGrupo, i) => {
+            const letraGrupo = String.fromCharCode(65 + i);
+            
+            doc.setFontSize(16);
+            doc.setTextColor(26, 71, 42); // Verde PC Fútbol
+            doc.text(`GRUPO ${letraGrupo}`, 14, finalY + 10);
+            
+            // Definición de jornadas basada en índices 0,1,2,3
+            // Tu pedido: 1(0), 2(1), 3(2), 4(3)
+            const jornadas = [
+                { label: "Matchday 1", matches: [[1, 2], [3, 0]] }, // 2v3, 4v1
+                { label: "Matchday 2", matches: [[0, 1], [2, 3]] }, // 1v2, 3v4
+                { label: "Matchday 3", matches: [[2, 0], [1, 3]] }, // 3v1, 2v4
+                { label: "Matchday 4", matches: [[0, 2], [3, 1]] }, // 1v3, 4v2
+                { label: "Matchday 5", matches: [[2, 1], [0, 3]] }, // 3v2, 1v4
+                { label: "Matchday 6", matches: [[1, 0], [3, 2]] }  // 2v1, 4v3
+            ];
+
+            const rows = [];
+            jornadas.forEach(j => {
+                j.matches.forEach(m => {
+                    rows.push([
+                        j.label,
+                        equipoGrupo[m[0]], 
+                        "[  ]", 
+                        "v", 
+                        "[  ]", 
+                        equipoGrupo[m[1]]
+                    ]);
+                });
+            });
+
+            doc.autoTable({
+                startY: finalY + 15,
+                head: [['Jornada', 'Local', 'G', '', 'G', 'Visitante']],
+                body: rows,
+                theme: 'grid',
+                headStyles: { fillColor: [0, 68, 136] }, // Azul Champions
+                styles: { font: "courier", fontSize: 10, halign: 'center' },
+                columnStyles: {
+                    1: { halign: 'right', fontStyle: 'bold' },
+                    5: { halign: 'left', fontStyle: 'bold' }
+                }
+            });
+
+            finalY = doc.lastAutoTable.finalY + 10;
+            
+            // Si el siguiente grupo no cabe, saltar página
+            if (finalY > 230 && i < 3) {
+                doc.addPage();
+                finalY = 10;
+            }
+        });
+
+        doc.save(`Calendario_Champions_2026.pdf`);
+    }
+</script>
+</body>
+</html>

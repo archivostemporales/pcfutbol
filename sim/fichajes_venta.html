@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>PC FÚTBOL 2026 - Tasador Pro</title>
+    <style>
+        :root {
+            --pcf-green: #1a472a; --pcf-gold: #f1c40f; --pcf-dark: #0a1f14;
+            --pcf-text: #2ecc71; --pcf-bg: #000;
+        }
+        body { 
+            background: #000; color: white; font-family: 'Courier New', monospace; 
+            margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; 
+        }
+        .container { 
+            width: 850px; background: var(--pcf-green); border: 5px solid var(--pcf-gold); 
+            padding: 30px; box-shadow: 0 0 30px #000; border-radius: 10px;
+        }
+        .header { background: var(--pcf-dark); padding: 15px; border: 2px solid var(--pcf-gold); text-align: center; margin-bottom: 25px; }
+        
+        .flex-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        .input-panel { background: rgba(0,0,0,0.4); padding: 20px; border: 1px solid var(--pcf-gold); }
+        .display-panel { 
+            background: var(--pcf-dark); border: 2px solid var(--pcf-gold); 
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            text-align: center;
+        }
+
+        .input-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        label { color: var(--pcf-gold); font-weight: bold; font-size: 0.85em; text-transform: uppercase; }
+        input { 
+            background: #000; color: var(--pcf-text); border: 2px solid var(--pcf-gold); 
+            width: 70px; padding: 8px; text-align: center; font-size: 1.2em; font-weight: bold;
+            font-family: 'Courier New';
+        }
+        input#fama { color: #3498db; border-color: #3498db; } /* Color especial para Fama */
+
+        .med-label { color: var(--pcf-gold); font-size: 0.9em; font-weight: bold; }
+        .val-media { font-size: 5.5em; color: var(--pcf-text); font-weight: bold; margin: 0; line-height: 1em; }
+        .val-precio { font-size: 2.2em; color: var(--pcf-gold); font-weight: bold; margin: 15px 0; border-top: 1px solid #333; padding-top: 15px; }
+        
+        .btn { 
+            width: 100%; padding: 18px; cursor: pointer; font-family: 'Courier New';
+            font-weight: bold; text-transform: uppercase; border: none; font-size: 1em;
+        }
+        .btn-sell { background: var(--pcf-gold); color: black; margin-top: 10px; }
+        .btn-back { background: #444; color: white; margin-top: 15px; }
+        .btn-sell:hover { background: white; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1 style="color: var(--pcf-gold); margin: 0; letter-spacing: 2px;">TASACIÓN DE MERCADO</h1>
+        <p style="margin: 5px 0 0 0; font-size: 0.8em; color: #aaa;">CÁLCULO BASADO EN 6 HABILIDADES + REPUTACIÓN (FAMA)</p>
+    </div>
+
+    <div class="flex-layout">
+        <div class="input-panel">
+            <div class="input-row"><label>RITMO</label><input type="number" id="rit" placeholder="0" oninput="tasar()"></div>
+            <div class="input-row"><label>TIRO</label><input type="number" id="tir" placeholder="0" oninput="tasar()"></div>
+            <div class="input-row"><label>PASE</label><input type="number" id="pas" placeholder="0" oninput="tasar()"></div>
+            <div class="input-row"><label>REGATE</label><input type="number" id="reg" placeholder="0" oninput="tasar()"></div>
+            <div class="input-row"><label>DEFENSA</label><input type="number" id="def" placeholder="0" oninput="tasar()"></div>
+            <div class="input-row"><label>FÍSICO</label><input type="number" id="fis" placeholder="0" oninput="tasar()"></div>
+            <div class="input-row" style="margin-top:20px; border-top: 1px solid #444; padding-top: 15px;">
+                <label style="color:#3498db">FAMA (JS)</label>
+                <input type="number" id="fama" placeholder="0" oninput="tasar()">
+            </div>
+            
+            <button class="btn btn-back" onclick="window.location.href='fichajes.html'">VOLVER AL MENÚ</button>
+        </div>
+
+        <div class="display-panel">
+            <span class="med-label">MEDIA DE MERCADO (/7)</span>
+            <div id="res-med" class="val-media">--</div>
+            
+            <div id="res-precio" class="val-precio">0 €</div>
+            
+            <div style="width: 80%">
+                <button class="btn btn-sell" onclick="vender()">CONFIRMAR VENTA</button>
+            </div>
+            <p style="font-size: 0.65em; color: #666; margin-top: 20px; padding: 0 20px;">
+                Fórmula: [(Stats + Fama) / 7]² * 15.000
+            </p>
+        </div>
+    </div>
+</div>
+
+<script>
+    function tasar() {
+        // Obtenemos los 7 valores
+        const rit = parseInt(document.getElementById('rit').value) || 0;
+        const tir = parseInt(document.getElementById('tir').value) || 0;
+        const pas = parseInt(document.getElementById('pas').value) || 0;
+        const reg = parseInt(document.getElementById('reg').value) || 0;
+        const def = parseInt(document.getElementById('def').value) || 0;
+        const fis = parseInt(document.getElementById('fis').value) || 0;
+        const fama = parseInt(document.getElementById('fama').value) || 0;
+
+        // Solo calculamos si se han metido todos los datos (mínimo fama y stats)
+        if(rit > 0 && fama > 0) {
+            // 1. SUMA DE LOS 7 FACTORES
+            const sumaTotal = rit + tir + pas + reg + def + fis + fama;
+            
+            // 2. DIVIDIMOS ENTRE 7 (Media de Mercado)
+            const mediaMercado = Math.floor(sumaTotal / 7);
+            
+            // 3. APLICAMOS TU FÓRMULA DE MILLONES
+            const precioFinal = mediaMercado * mediaMercado * 15000;
+
+            // Mostramos resultados
+            document.getElementById('res-med').innerText = mediaMercado;
+            document.getElementById('res-precio').innerText = precioFinal.toLocaleString('es-ES') + " €";
+        } else {
+            document.getElementById('res-med').innerText = "--";
+            document.getElementById('res-precio').innerText = "0 €";
+        }
+    }
+
+    function vender() {
+        const precio = document.getElementById('res-precio').innerText;
+        if(precio === "0 €") return alert("Introduce los datos del jugador para tasar.");
+        
+        if(confirm("¿Vender jugador por " + precio + "?\nEl dinero se ingresará en caja inmediatamente.")) {
+            alert("Venta realizada con éxito.");
+            location.reload();
+        }
+    }
+</script>
+
+</body>
+</html>

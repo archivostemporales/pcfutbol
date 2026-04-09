@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Liga</title>
+    <script src="betis.js"></script>
+    <script src="sevilla.js"></script>
+    <script src="realmadrid.js"></script>
+    <script src="barcelona.js"></script>
+    <script src="atletico.js"></script>
+    <script src="athletic.js"></script>
+    <script src="villarreal.js"></script>
+    <script src="valencia.js"></script>
+
+    <style>
+:root {
+    --pcf-green: #8b0000; /* Rojo oscuro para el fondo del estadio */
+    --pcf-gold: #c5a059;  /* Dorado tipo trofeo */
+    --pcf-dark: #1a1a1a;  /* Negro para el fondo de la página */
+    --pcf-red: #ff4d4d;   
+    --pcf-text: #ffffff;  /* Texto blanco para que resalte en el rojo */
+    --pcf-blue: #e20613;  /* Rojo vibrante para botones */
+}
+
+body { 
+    background: radial-gradient(circle, #3d0000 0%, #000000 100%); 
+    color: white; 
+    font-family: 'Segoe UI', Arial, sans-serif; 
+    margin: 0; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    min-height: 100vh; 
+}
+        .stadium { width: 1050px; background: var(--pcf-green); border: 5px solid var(--pcf-gold); padding: 30px; border-radius: 15px; box-shadow: 0 0 50px rgba(0,0,0,0.8); }
+        .screen { display: none; }
+        .active { display: block; }
+
+
+        
+        .flex-side-by-side { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        .team-card { background: var(--pcf-dark); padding: 20px; border: 1px solid var(--pcf-gold); border-radius: 8px; }
+        
+        #marcador-wrap { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; background: #000; padding: 20px; border: 3px double var(--pcf-gold); margin-bottom: 20px; }
+        #goles-txt { font-size: 4em; font-weight: bold; padding: 0 30px; min-width: 150px; text-align: center; }
+
+        .escudo { width: 60px; height: 60px; object-fit: contain; vertical-align: middle; }
+        .escudo-big { width: 120px; height: 120px; object-fit: contain; } 
+        .escudo-small { width: 40px; height: 40px; object-fit: contain; }
+        
+        .m-flex { display: flex; align-items: center; gap: 15px; }
+        .title-flex { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
+
+        #log { height: 350px; overflow-y: auto; background: #000; padding: 15px; border: 1px dashed var(--pcf-gold); scroll-behavior: smooth; }
+        .log-line { display: block; width: 100%; margin-bottom: 8px; clear: both; font-size: 0.95em; animation: slideIn 0.3s ease-out; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .log-L { text-align: left; color: var(--pcf-text); }
+        .log-V { text-align: right; color: #fff; }
+
+        .aviso-tec { display: block; font-size: 0.75em; margin-top: 4px; font-weight: bold; min-height: 1.2em; }
+        .penalizado { color: var(--pcf-red); animation: blink 1s infinite; }
+        .cansado { color: #ffa500; }
+        @keyframes blink { 0% {opacity: 1;} 50% {opacity: 0.4;} 100% {opacity: 1;} }
+
+        .btn-pcf { background: var(--pcf-gold); color: black; border: none; padding: 18px; font-weight: bold; width: 100%; cursor: pointer; margin-top: 20px; text-transform: uppercase; font-size: 1.1em; }
+        .btn-pcf:disabled { background: #444; color: #888; cursor: not-allowed; border: 1px solid #222; }
+
+        select { background: #111; color: var(--pcf-text); border: 1px solid var(--pcf-gold); padding: 10px; width: 100%; font-weight: bold; }
+        select:disabled { color: var(--pcf-red); border-color: #500; }
+        .pos-label { font-size: 0.75em; color: var(--pcf-gold); font-weight: bold; text-transform: uppercase; }
+
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 9999; justify-content: center; align-items: center; }
+        .modal-content { background: var(--pcf-dark); border: 4px solid var(--pcf-gold); padding: 30px; width: 800px; }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 20px; }
+        
+        .txt-baja { color: #ff9f43; font-weight: bold; font-style: italic; font-size: 0.9em; }
+        .txt-roja { color: var(--pcf-red); font-weight: bold; font-size: 0.9em; }
+        .modal-header-escudos { display: flex; justify-content: space-around; align-items: center; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+
+<audio id="snd-pitido" src="pitido.mp3"></audio>
+<audio id="snd-ambiente" src="ambiente.mp3" loop></audio>
+<audio id="snd-himno" loop></audio>
+
+<div class="stadium">
+    <div id="scr-select" class="screen active">
+        <div style="text-align:center; background:var(--pcf-dark); padding:60px; border:2px solid var(--pcf-gold);">
+<h1 style="color:var(--pcf-gold);">COPA DEL REY</h1>
+            <div class="flex-side-by-side">
+                <div><label>LOCAL</label><select id="mainSelL"><option value="BETIS">REAL BETIS</option><option value="MADRID">REAL MADRID</option><option value="BARCELONA">FC BARCELONA</option>      <option value="ATLETICO">ATLÉTICO DE MADRID</option> <option value="ATHLETIC">ATHLETIC CLUB</option> <option value="VALENCIA">VALENCIA CF</option>   <option value="VILLARREAL">VILLARREAL CF</option>         <option value="SEVILLA">SEVILLA FC</option></select></div>
+                <div><label>VISITANTE</label><select id="mainSelV"><option value="SEVILLA">SEVILLA FC</option><option value="MADRID">REAL MADRID</option><option value="BARCELONA">FC BARCELONA</option>      <option value="ATLETICO">ATLÉTICO DE MADRID</option> <option value="ATHLETIC">ATHLETIC CLUB</option> <option value="VALENCIA">VALENCIA CF</option>   <option value="VILLARREAL">VILLARREAL CF</option>    <option value="BETIS">REAL BETIS</option></select></div>
+            </div>
+            <button class="btn-pcf" onclick="irAVestuario()">GESTIONAR EQUIPOS</button>
+        </div>
+    </div>
+
+    <div id="scr-tactics" class="screen">
+        <h2 style="text-align:center; color:var(--pcf-gold); text-transform:uppercase;" id="tactics-title">Alineaciones</h2>
+        <div class="flex-side-by-side">
+            <div class="team-card"><div id="titleL" class="title-flex"></div><div id="boxL"></div></div>
+            <div class="team-card"><div id="titleV" class="title-flex" style="flex-direction: row-reverse; text-align: right;"></div><div id="boxV"></div></div>
+        </div>
+        <div id="error-msg" style="color:var(--pcf-red); text-align:center; margin-top:10px; font-weight:bold; height:20px;"></div>
+        <button class="btn-pcf" id="btn-play" onclick="manejarPartido()">SALTAR AL CAMPO</button>
+    </div>
+
+    <div id="scr-match" class="screen">
+        <div id="marcador-wrap">
+            <div id="m-nameL" class="m-flex" style="justify-content: flex-start; color:var(--pcf-gold); font-weight:bold;"></div>
+            <div id="goles-txt">0 - 0</div>
+            <div id="m-nameV" class="m-flex" style="justify-content: flex-end; color:var(--pcf-gold); font-weight:bold;"></div>
+        </div>
+        <div id="log"></div>
+        <div id="log-actions" style="text-align: center; min-height: 60px; margin-top: 15px;"></div>
+    </div>
+
+    <div id="pcf-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header-escudos">
+                <img id="modal-escudoL" src="" class="escudo-big">
+                <div style="text-align:center;">
+                    <h2 id="modal-title" style="color:var(--pcf-gold); margin: 0; font-size: 1.5em;"></h2>
+                    <div id="modal-score" style="font-size: 4em; font-weight: bold; margin:10px 0;">0 - 0</div>
+                </div>
+                <img id="modal-escudoV" src="" class="escudo-big">
+            </div>
+            <div class="stats-grid">
+                <div id="res-colL"></div>
+                <div id="res-colV" style="text-align:right;"></div>
+            </div>
+
+            <div id="final-nav" style="display:none; gap:10px; grid-template-columns: 1fr 1fr;">
+                <button class="btn-pcf" onclick="location.reload()">SIGUIENTE PARTIDO</button>
+                <button class="btn-pcf" style="background:#444;" onclick="window.location.href='../calendario.html'">SALIR</button>
+            </div>
+
+            <button id="btn-modal-close" class="btn-pcf" onclick="cerrarModal()">CONTINUAR</button>
+        </div>
+    </div>
+</div>
+
+<script>
+const baseDatos = {
+    "BETIS": typeof plantillaBetis !== 'undefined' ? plantillaBetis : [],
+    "MADRID": typeof plantillaMadrid !== 'undefined' ? plantillaMadrid : [],
+    "BARCELONA": typeof plantillaBarcelona !== 'undefined' ? plantillaBarcelona : [],
+    "ATLETICO": typeof plantillaAtletico !== 'undefined' ? plantillaAtletico : [],
+    "ATHLETIC": typeof plantillaAthletic !== 'undefined' ? plantillaAthletic : [],
+    "VALENCIA": typeof plantillaValencia !== 'undefined' ? plantillaValencia : [],
+    "VILLARREAL": typeof plantillaVillarreal !== 'undefined' ? plantillaVillarreal : [],
+    "SEVILLA": typeof plantillaSevilla !== 'undefined' ? plantillaSevilla : []
+};
+
+const escudosMap = {
+    "BETIS": "escudos/realbetis.png",
+    "MADRID": "escudos/realmadrid.png",
+    "BARCELONA": "escudos/barcelona.png",
+    "ATLETICO": "escudos/atletico.png",
+    "ATHLETIC": "escudos/athletic.png",
+    "VALENCIA": "escudos/valencia.png",
+    "VILLARREAL": "escudos/villarreal.png",
+    "SEVILLA": "escudos/sevilla.png"
+};
+
+const himnosMap = {
+    "BETIS": "himnos/betis.mp3",
+    "MADRID": "himnos/realmadrid.mp3",
+    "BARCELONA": "himnos/barcelona.mp3",
+    "ATLETICO": "himnos/atletico.mp3",
+    "ATHLETIC": "himnos/athletic.mp3",
+    "VALENCIA": "himnos/valencia.mp3",
+    "VILLARREAL": "himnos/villarreal.mp3",
+    "SEVILLA": "himnos/sevilla.mp3"
+    // Añade aquí el resto de tus equipos siguiendo el mismo formato
+};
+
+let fase = 0, scoreL = 0, scoreV = 0;
+let expulsados = { L: [], V: [] }, lesionados = { L: [], V: [] };
+let posicionesExpulsadas = { L: [], V: [] }; 
+let jugaronPrimera = { L: [], V: [] };
+let eventosPartido = [], alineacionActual = { L: {}, V: {} }; 
+
+const esquema = [
+    {id:"POR", n:"Portero", req:"POR"}, {id:"DEF", n:"Defensa", req:"DEF"}, 
+    {id:"MI", n:"M. Izquierdo", req:"MED"}, {id:"MD", n:"M. Derecho", req:"MED"}, 
+    {id:"DEL", n:"Delantero", req:"DEL"}
+];
+
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+async function unPitido() {
+    const snd = document.getElementById('snd-pitido');
+    snd.pause(); snd.currentTime = 0;
+    try { await snd.play(); } catch(e) {}
+}
+
+async function triplePitido() {
+    for(let i=0; i<3; i++) {
+        await unPitido();
+        await sleep(400); 
+    }
+}
+
+function irAVestuario() {
+    // 1. Detectar qué equipo se ha seleccionado como Local
+    const clubLocal = document.getElementById('mainSelL').value;
+    const audioHimno = document.getElementById('snd-himno');
+
+    // 2. Asignar el archivo correspondiente y reproducir
+    if (himnosMap[clubLocal]) {
+        audioHimno.src = himnosMap[clubLocal];
+        audioHimno.play().catch(e => console.log("Error al reproducir himno:", e));
+    }
+
+    document.getElementById('scr-select').classList.remove('active');
+    document.getElementById('scr-tactics').classList.add('active');
+    renderizarVestuario('L', true); renderizarVestuario('V', true);
+}
+
+function calcularMediaActual(jugador, posRequerida, lado) {
+    if (!jugador) return 0;
+    let media = jugador.med;
+    if (jugador.pos !== posRequerida) media = Math.floor(media * 0.5);
+    if (fase === 1 && jugaronPrimera[lado].includes(jugador.nombre) && posRequerida !== "POR") {
+        const multFisico = 0.5 + (jugador.fis / 200);
+        media = Math.floor(media * multFisico);
+    }
+    return media;
+}
+
+function obtenerMediaEquipo(lado) {
+    const club = document.getElementById('mainSel' + lado).value;
+    const jugadores = baseDatos[club];
+    let suma = 0;
+    let jugadoresEnCampo = 0;
+
+    esquema.forEach(p => {
+        const nombre = alineacionActual[lado][p.id];
+        const j = jugadores.find(jug => jug.nombre === nombre);
+        
+        if (j && !expulsados[lado].includes(j.nombre)) {
+            suma += calcularMediaActual(j, p.req, lado);
+            jugadoresEnCampo++;
+        }
+    });
+
+    // IMPORTANTE: Siempre dividimos por 5. 
+    // Si hay un expulsado y no pones a nadie, la media bajará drásticamente.
+    // Si pones a un sustituto, la media subirá pero habrás agotado un suplente.
+    return Math.floor(suma / 5);
+}
+
+function renderizarVestuario(lado, esPrimeraVez) {
+    const club = document.getElementById('mainSel' + lado).value;
+    const jugadores = baseDatos[club];
+    if (esPrimeraVez) alineacionActual[lado] = {};
+    
+    const container = document.getElementById('box' + lado);
+    
+    container.innerHTML = esquema.map(p => {
+        // Ya no bloqueamos con IF fueExpulsado
+        if (esPrimeraVez) {
+            const titu = jugadores.find(j => j.titular && j.pos === p.req && !Object.values(alineacionActual[lado]).includes(j.nombre));
+            if (titu) alineacionActual[lado][p.id] = titu.nombre;
+        }
+
+        const huboRojaAqui = posicionesExpulsadas[lado].includes(p.id);
+
+        return `<div style="margin-bottom:12px;">
+                    <span class="pos-label">${p.n}</span>
+                    <select id="sel_${lado}_${p.id}" onchange="validarTodo('${lado}')"></select>
+                    <div id="aviso_${lado}_${p.id}" class="aviso-tec">
+                        ${huboRojaAqui ? '<span class="penalizado">🟥 HUECO POR EXPULSIÓN</span>' : ''}
+                    </div>
+                </div>`;
+    }).join('');
+    validarTodo(lado);
+}
+
+function validarTodo(lado) {
+    const club = document.getElementById('mainSel' + lado).value;
+    const jugadores = baseDatos[club];
+    
+    esquema.forEach(p => {
+        const select = document.getElementById(`sel_${lado}_${p.id}`);
+        if (!select) return; 
+        const aviso = document.getElementById(`aviso_${lado}_${p.id}`);
+        const valorActual = select.value || alineacionActual[lado][p.id];
+        
+        // 1. Definimos PRIMERO las opciones fijas (VACÍO y EXPULSADO arriba)
+        let htmlOptions = `<option value="VACIO" ${valorActual === 'VACIO' ? 'selected' : ''}>-- VACÍO --</option>`;
+        htmlOptions += `<option value="EXPULSADO" ${valorActual === 'EXPULSADO' ? 'selected' : ''} style="color:red; font-weight:bold;">[ EXPULSADO ]</option>`;
+        
+        // 2. Añadimos DESPUÉS la lista de jugadores
+        htmlOptions += jugadores.filter(j => !expulsados[lado].includes(j.nombre) && !lesionados[lado].includes(j.nombre)).map(j => {
+            const mediaReal = calcularMediaActual(j, p.req, lado);
+            return `<option value="${j.nombre}" ${valorActual === j.nombre ? 'selected' : ''}>${j.nombre} (${j.pos}, ${mediaReal})</option>`;
+        }).join('');
+        
+        select.innerHTML = htmlOptions;
+        alineacionActual[lado][p.id] = select.value;
+
+        // --- Resto de la lógica de avisos igual ---
+        const jAct = jugadores.find(jug => jug.nombre === select.value);
+        let htmlAviso = "";
+        
+        // El aviso de posición roja ahora lo manejamos visualmente en el div de aviso
+        if (posicionesExpulsadas[lado].includes(p.id)) {
+            htmlAviso += `<span class="penalizado">🟥 HUECO POR EXPULSIÓN</span> `;
+        }
+
+        if (jAct) {
+            if (jAct.pos !== p.req) htmlAviso += `<span class="penalizado">⚠️ POSICIÓN INCORRECTA (-50%)</span> `;
+            if (fase === 1 && jugaronPrimera[lado].includes(jAct.nombre) && p.id !== "POR") {
+                htmlAviso += `<span class="cansado">⏳ CANSADO (Fis: ${jAct.fis})</span>`;
+            }
+        }
+        aviso.innerHTML = htmlAviso;
+    });
+
+    // --- Actualización de media y botón de juego ---
+    const media = obtenerMediaEquipo(lado);
+    document.getElementById('title' + lado).innerHTML = `
+        <img src="${escudosMap[club]}" class="escudo-small">
+        <h3 style="color:var(--pcf-gold); margin:0;">${club} (${media})</h3>
+    `;
+
+    const btn = document.getElementById('btn-play');
+    const errorDiv = document.getElementById('error-msg');
+    const dupL = tieneDuplicados(Object.values(alineacionActual.L));
+    const dupV = tieneDuplicados(Object.values(alineacionActual.V));
+
+    if (dupL || dupV) {
+        btn.disabled = true;
+        errorDiv.innerText = "⚠️ ERROR: JUGADORES DUPLICADOS";
+    } else {
+        btn.disabled = false;
+        errorDiv.innerText = "";
+    }
+}
+
+function tieneDuplicados(array) {
+    const filtrado = array.filter(x => x !== "VACIO" && x !== null);
+    return new Set(filtrado).size !== filtrado.length;
+}
+
+async function manejarPartido() {
+    // Detener el himno
+    const audioHimno = document.getElementById('snd-himno');
+    audioHimno.pause();
+    audioHimno.currentTime = 0; // Reinicia el audio para la próxima vez
+
+    await unPitido();
+    document.getElementById('snd-ambiente').play();
+    
+    const clubL = document.getElementById('mainSelL').value;
+    const clubV = document.getElementById('mainSelV').value;
+    const mediaL = obtenerMediaEquipo('L');
+    const mediaV = obtenerMediaEquipo('V');
+
+    document.getElementById('m-nameL').innerHTML = `<img src="${escudosMap[clubL]}" class="escudo"> <span>${clubL} (${mediaL})</span>`;
+    document.getElementById('m-nameV').innerHTML = `<span>(${mediaV}) ${clubV}</span> <img src="${escudosMap[clubV]}" class="escudo">`;
+    
+    document.getElementById('scr-tactics').classList.remove('active');
+    document.getElementById('scr-match').classList.add('active');
+    
+    if (fase === 0) {
+        jugaronPrimera.L = Object.values(alineacionActual.L);
+        jugaronPrimera.V = Object.values(alineacionActual.V);
+    }
+    await simularMitad();
+}
+
+async function simularMitad() {
+    const L = capturarData('L'); const V = capturarData('V');
+    const log = document.getElementById('log');
+    log.innerHTML += `<div style="text-align:center; padding:10px; color:var(--pcf-gold); border-bottom:1px double #444;">--- ${fase===0?'1ª PARTE':'2ª PARTE'} ---</div>`;
+
+    const turnos = [
+        {atk:L, def:V, p:1, m:10, pId:"DEF"}, {atk:V, def:L, p:1, m:15, pId:"DEF"},
+        {atk:L, def:V, p:2, m:25, pId:"MI"},  {atk:V, def:L, p:2, m:32, pId:"MI"},
+        {atk:L, def:V, p:3, m:38, pId:"MD"},  {atk:V, def:L, p:3, m:42, pId:"MD"},
+        {atk:L, def:V, p:4, m:44, pId:"DEL"}, {atk:V, def:L, p:4, m:45, pId:"DEL"},
+        {atk:L, def:V, p:4, m:45, pId:"DEL"}, {atk:V, def:L, p:4, m:45, pId:"DEL"}
+    ];
+
+    const habs = ["rit", "tir", "pas", "reg", "def", "fis"];
+
+for (let t of turnos) {
+        await sleep(1000); 
+        const min = fase === 0 ? t.m : t.m + 45;
+        const atacante = t.atk.t[t.p];
+        if(!atacante) continue;
+
+        const h = habs[Math.floor(Math.random()*habs.length)];
+        
+        // --- FACTOR CAMPO (VENTAJA LOCAL) ---
+//************************************************************************************************************************************************
+        const bonoLocal = 3; // *************************** El equipo de casa recibe +3 en sus duelos. 0 es igualdad *****************************
+//************************************************************************************************************************************************
+
+        // 1. Cálculo de Ataque (vAtk)
+        // Reducimos el azar a un máximo de 30 para que pesen más las stats del jugador
+        let vAtk = atacante[h] + (Math.floor(Math.random() * 31));
+        if (t.atk.side === 'L') vAtk += bonoLocal; 
+
+        // 2. Cálculo de Defensa (vDef)
+        // Ahora la defensa central recibe ayuda del 20% de la media global del equipo
+        const mediaEquipoDef = obtenerMediaEquipo(t.def.side === 'L' ? 'L' : 'V');
+        const statDefensor = t.def.t[1] ? t.def.t[1][h] : 0; 
+        
+        let vDef = statDefensor + (mediaEquipoDef * 0.2) + (Math.floor(Math.random() * 31));
+        if (t.def.side === 'L') vDef += bonoLocal;
+
+        // 3. Resolución del duelo y Tiro a puerta
+        if(vAtk > vDef) {
+            // El portero rival intenta parar el tiro
+            const vPor = (t.def.t[0] ? t.def.t[0].def : 10) + (Math.floor(Math.random() * 41));
+            
+            // Margen de acierto: al visitante le pedimos más puntería (+13) que al local (+10)
+//************************************************************************************************************************************************
+            const dificultadExtra = (t.atk.side === 'L') ? 10 : 13;        // ***************** 10 : 10 sería equilibrado ************************
+//************************************************************************************************************************************************
+
+            if(vAtk > (vPor + dificultadExtra)) {
+                if(t.atk.side === 'L') scoreL++; else scoreV++;
+                eventosPartido.push({min, tipo:'GOL', desc: atacante.nombre, side: t.atk.side});
+                log.innerHTML += `<div class="log-line log-${t.atk.side}">${min}' ⚽ GOL! ${atacante.nombre}</div>`;
+                document.getElementById('goles-txt').innerText = `${scoreL} - ${scoreV}`;
+                log.scrollTop = log.scrollHeight;
+            } else {
+                // Ocasión fallada o parada (opcional para dar realismo al log)
+                log.innerHTML += `<div class="log-line log-${t.atk.side}" style="color:#666; font-size:0.8em;">${min}' ⚠️ Ocasión de ${atacante.nombre}</div>`;
+            }
+        }
+        
+        // ... (Aquí sigue tu código de ROJAS y LESIONES tal cual lo tenías)
+        
+        let probLesion = 0.03;
+        if(fase === 1 && jugaronPrimera[t.atk.side].includes(atacante.nombre)) probLesion = 0.06;
+
+        if(Math.random() < probLesion) {
+            const tipo = Math.random() > 0.5 ? 'ROJA' : 'LESION';
+            let extraInfo = "";
+            if(tipo==='ROJA') {
+                expulsados[t.atk.side].push(atacante.nombre);
+                posicionesExpulsadas[t.atk.side].push(t.pId);
+            } else {
+                const semanas = Math.floor(Math.random() * 3) + 1;
+                lesionados[t.atk.side].push(atacante.nombre);
+                extraInfo = `${semanas} sem.`;
+            }
+            eventosPartido.push({min, tipo, desc: atacante.nombre, side: t.atk.side, extra: extraInfo});
+            log.innerHTML += `<div class="log-line log-${t.atk.side}" style="color:var(--pcf-red)">${min}' ${tipo}: ${atacante.nombre} ${extraInfo}</div>`;
+            log.scrollTop = log.scrollHeight;
+        }
+    }
+
+    if (fase === 1) { await triplePitido(); document.getElementById('snd-ambiente').pause(); } 
+    else { await unPitido(); }
+    
+    await sleep(500);
+    document.getElementById('log-actions').innerHTML = `<button class="btn-pcf" onclick="abrirResumen()">IR AL RESUMEN</button>`;
+}
+
+function abrirResumen() {
+    const clubL = document.getElementById('mainSelL').value;
+    const clubV = document.getElementById('mainSelV').value;
+
+    document.getElementById('modal-title').innerText = fase === 0 ? "ESTADÍSTICAS DESCANSO" : "RESULTADO FINAL";
+    document.getElementById('modal-score').innerText = `${scoreL} - ${scoreV}`;
+    document.getElementById('modal-escudoL').src = escudosMap[clubL];
+    document.getElementById('modal-escudoV').src = escudosMap[clubV];
+
+    const evL = document.getElementById('res-colL'); const evV = document.getElementById('res-colV');
+    evL.innerHTML = ""; evV.innerHTML = "";
+
+    eventosPartido.forEach(e => {
+        let textoBaja = "";
+        // Lógica para mostrar expulsados y lesionados en el resumen
+        if(e.tipo === 'LESION' && e.extra) {
+            textoBaja = ` <span class="txt-baja">(${e.extra} de baja)</span>`;
+        } else if (e.tipo === 'ROJA') {
+            textoBaja = ` <span class="txt-roja">(EXPULSADO)</span>`;
+        }
+        
+        const html = `<div style="margin-bottom:5px;">[${e.tipo}] ${e.min}' ${e.desc}${textoBaja}</div>`;
+        if(e.side === 'L') evL.innerHTML += html; else evV.innerHTML += html;
+    });
+
+    document.getElementById('pcf-modal').style.display = 'flex';
+    if(fase === 1) { 
+        document.getElementById('btn-modal-close').style.display = "none";
+        document.getElementById('final-nav').style.display = "grid";
+    }
+}
+
+function cerrarModal() {
+    document.getElementById('pcf-modal').style.display = 'none';
+    fase = 1;
+    document.getElementById('tactics-title').innerText = "SEGUNDA PARTE - CAMBIOS";
+    document.getElementById('log-actions').innerHTML = "";
+    document.getElementById('scr-match').classList.remove('active');
+    document.getElementById('scr-tactics').classList.add('active');
+    renderizarVestuario('L', false); renderizarVestuario('V', false);
+}
+
+
+
+
+function capturarData(lado) {
+    const club = document.getElementById('mainSel' + lado).value;
+    const t = esquema.map(p => {
+        const n = alineacionActual[lado][p.id]; 
+        // Cambiamos esta condición:
+        if(n === "VACIO" || n === "EXPULSADO") return null; 
+        
+        let j = {...baseDatos[club].find(jug => jug.nombre === n)};
+        // ... resto de la función
+     
+        if(j.pos !== p.req) {
+            ["rit","tir","pas","reg","def","fis"].forEach(h => j[h] = Math.floor(j[h]*0.5));
+        }
+        if(fase === 1 && jugaronPrimera[lado].includes(n) && p.id !== "POR") {
+            const multFisico = 0.5 + (j.fis / 200);
+            ["rit","tir","pas","reg","def","fis"].forEach(h => j[h] = Math.floor(j[h]*multFisico));
+        }
+        return j;
+    });
+    return { t, side: lado };
+}
+</script>
+</body>
+</html>
