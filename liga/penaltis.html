@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>TANDA DE PENALTIS</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Barlow:wght@400;700;900&display=swap');
+
+        :root {
+            --pc-gold: #ffd700;
+            --pc-blue: #004a99;
+            --pitch-green: #1e4d20;
+            --win-green: #2ecc71;
+            --lose-red: #e74c3c;
+        }
+
+        body {
+            font-family: 'Barlow', sans-serif;
+            background-color: #000;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            text-transform: uppercase;
+            overflow: hidden;
+        }
+
+        /* PANTALLA INICIAL */
+        #setup-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle, #002b5c 0%, #000 100%);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .setup-box {
+            background: rgba(0,0,0,0.85);
+            padding: 50px;
+            border: 4px solid var(--pc-gold);
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 0 50px rgba(0,0,0,1);
+        }
+
+        input {
+            padding: 15px;
+            font-size: 1.1rem;
+            margin: 12px 0;
+            width: 300px;
+            background: #111;
+            border: 2px solid var(--pc-blue);
+            color: white;
+            text-transform: uppercase;
+            text-align: center;
+            outline: none;
+        }
+        input:focus { border-color: var(--pc-gold); }
+
+        /* MARCADOR */
+        #scoreboard {
+            width: 850px;
+            background: #111;
+            border: 3px solid var(--pc-blue);
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        }
+
+        .team-name { color: var(--pc-gold); font-weight: 900; font-size: 1.1rem; }
+        .active-team { text-shadow: 0 0 15px var(--pc-gold); color: #fff; }
+        .dots { display: flex; gap: 8px; margin-top: 5px; }
+        .dot { 
+            width: 30px; height: 30px; border-radius: 50%; 
+            border: 2px solid #333; display: flex; align-items: center; justify-content: center; 
+        }
+        .goal { background: var(--win-green); border-color: #fff; }
+        .miss { background: var(--lose-red); border-color: #fff; }
+
+        /* ESTADIO */
+        #stadium {
+            position: relative;
+            width: 850px;
+            height: 550px;
+            background: radial-gradient(circle at bottom, var(--pitch-green) 0%, #000 95%);
+            border: 12px solid #222;
+            border-radius: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .goal-frame {
+            position: relative;
+            width: 600px;
+            height: 300px;
+            border: 10px solid white;
+            border-bottom: none;
+            margin-top: 40px;
+            background: rgba(255,255,255,0.05);
+        }
+
+/* Estilo base para todos los balones */
+.target {
+    position: absolute;
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 4px solid white;
+    display: flex; align-items: center; justify-content: center;
+    z-index: 5; 
+    transition: transform 0.2s, filter 0.2s; /* Animación suave */
+}
+        }
+/* El efecto al poner el ratón encima (HOVER) */
+.target:hover { 
+    filter: brightness(1.3); 
+    transform: scale(1.1); /* Escala normal para los laterales */
+}
+
+        .t-bl { bottom: 15px; left: 15px; background: #3498db; }
+        .t-tl { top: 15px; left: 15px; background: #2ecc71; }
+/* EL CAMBIO CLAVE: El balón central amarillo */
+.t-tc { 
+    top: 15px; 
+    left: 50%; 
+    /* Esta línea es la que evita que se mueva al lado */
+    transform: translateX(-50%); 
+    background: #f1c40f; 
+}
+        .t-tr { top: 15px; right: 15px; background: #e67e22; }
+        .t-br { bottom: 15px; right: 15px; background: #e74c3c; }
+
+
+
+/* POPUPS Y PANTALLA FINAL */
+        #result-popup {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            padding: 40px 80px;
+            background: linear-gradient(135deg, var(--pc-blue), #000);
+            border: 4px solid var(--pc-gold);
+            border-radius: 15px;
+            z-index: 200;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        #result-popup.show { transform: translate(-50%, -50%) scale(1); }
+
+        #privacy-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.98);
+            z-index: 150;
+            display: flex;
+            flex-direction: column;
+            align-items: center; justify-content: center; text-align: center;
+        }
+
+        #end-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 2000;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 1s;
+        }
+
+        .winner-card {
+            background: linear-gradient(to bottom, #111, #002b5c);
+            padding: 60px;
+            border: 5px solid var(--pc-gold);
+            text-align: center;
+            box-shadow: 0 0 100px var(--pc-blue);
+        }
+
+        .btn-nav {
+            background: var(--pc-blue);
+            color: white;
+            padding: 20px 40px;
+            border: 2px solid var(--pc-gold);
+            cursor: pointer;
+            font-weight: 900;
+            font-size: 1.2rem;
+            text-decoration: none;
+            margin-top: 40px;
+            display: inline-block;
+            transition: 0.3s;
+        }
+        .btn-nav:hover { background: #fff; color: var(--pc-blue); transform: scale(1.1); }
+
+        .btn-ready {
+            background: var(--pc-blue); color: white; padding: 18px 35px;
+            border: 3px solid var(--pc-gold); cursor: pointer; font-weight: 900; margin-top: 25px;
+        }
+        
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <audio id="snd-ambiente" src="ambiente.mp3" loop></audio>
+    <audio id="snd-gol" src="gol.mp3"></audio>
+    <audio id="snd-fallo" src="fallo.mp3"></audio>
+    <audio id="snd-silbato" src="pitido.mp3"></audio>
+
+    <div id="setup-screen">
+        <div class="setup-box">
+            <h1 style="color: var(--pc-gold); font-size: 3rem; margin: 0;">PC FÚTBOL 2026</h1>
+            <p style="letter-spacing: 5px; margin-bottom: 30px;">TANDA DE PENALTIS</p>
+            <input type="text" id="inputName1" placeholder="NOMBRE EQUIPO 1" maxlength="15">
+            <br>
+            <input type="text" id="inputName2" placeholder="NOMBRE EQUIPO 2" maxlength="15">
+            <br>
+            <button class="btn-ready" onclick="startGame()">COMENZAR PARTIDO</button>
+        </div>
+    </div>
+
+    <div id="scoreboard" class="hidden">
+        <div class="team-score">
+            <div class="team-name" id="labelA">---</div>
+            <div class="dots" id="dotsA"></div>
+        </div>
+        <div class="team-score" style="text-align: right;">
+            <div class="team-name" id="labelB">---</div>
+            <div class="dots" id="dotsB" style="justify-content: flex-end;"></div>
+        </div>
+    </div>
+
+    <div id="stadium" class="hidden">
+        <div id="instruction" style="margin-top: 20px; font-size: 1.2rem; color: var(--pc-gold);">...</div>
+        
+        <div class="goal-frame" id="goal-frame">
+            <div class="target t-bl" onclick="handleClick('azul')"><i class="fa-solid fa-soccer-ball"></i></div>
+            <div class="target t-tl" onclick="handleClick('verde')"><i class="fa-solid fa-soccer-ball"></i></div>
+            <div class="target t-tc" onclick="handleClick('amarillo')"><i class="fa-solid fa-soccer-ball"></i></div>
+            <div class="target t-tr" onclick="handleClick('naranja')"><i class="fa-solid fa-soccer-ball"></i></div>
+            <div class="target t-br" onclick="handleClick('rojo')"><i class="fa-solid fa-soccer-ball"></i></div>
+        </div>
+
+        <div id="result-popup">
+            <h2 id="popup-text" style="font-size: 4rem; margin:0; text-align: center;">¡GOL!</h2>
+        </div>
+
+        <div id="privacy-overlay">
+            <i class="fa-solid fa-lock-open" style="font-size: 3rem; color: var(--pc-gold); margin-bottom: 20px;"></i>
+            <h2 id="overlay-msg">CAMBIO DE POSICIÓN</h2>
+            <p id="overlay-p">...</p>
+            <button class="btn-ready" onclick="hideOverlay()">CONTINUAR</button>
+        </div>
+    </div>
+
+    <div id="end-screen">
+        <div class="winner-card">
+            <i class="fa-solid fa-trophy" style="font-size: 5rem; color: var(--pc-gold); margin-bottom: 20px;"></i>
+            <h1 style="font-size: 1.5rem; color: white; margin: 0;">CAMPEÓN DEL ENCUENTRO</h1>
+            <h2 id="final-winner-name" style="font-size: 4rem; color: var(--pc-gold); margin: 10px 0;">---</h2>
+            <div id="final-score" style="font-size: 2rem; border-top: 1px solid #333; padding-top: 20px;">0 - 0</div>
+            
+            <a href="../calendario.html" class="btn-nav">IR AL CALENDARIO <i class="fa-solid fa-calendar-days"></i></a>
+        </div>
+    </div>
+
+    <script>
+        let teamNames = { A: "EQUIPO A", B: "EQUIPO B" };
+        let turnOfAttacker = "A"; 
+        let phase = "PORTERO";    
+        let goalkeeperChoice = null;
+        let isProcessing = false; 
+        let stats = { teamA: [], teamB: [] };
+
+        function startGame() {
+            const n1 = document.getElementById('inputName1').value.trim();
+            const n2 = document.getElementById('inputName2').value.trim();
+            if (n1) teamNames.A = n1.toUpperCase();
+            if (n2) teamNames.B = n2.toUpperCase();
+
+            document.getElementById('labelA').innerText = teamNames.A;
+            document.getElementById('labelB').innerText = teamNames.B;
+
+            document.getElementById('setup-screen').classList.add('hidden');
+            document.getElementById('scoreboard').classList.remove('hidden');
+            document.getElementById('stadium').classList.remove('hidden');
+
+            playSound('snd-ambiente'); // Iniciar ambiente
+            initDots();
+        }
+
+        function initDots() {
+            for(let i=0; i<5; i++) {
+                document.getElementById('dotsA').innerHTML += `<div class="dot" id="dotA-${i}"></div>`;
+                document.getElementById('dotsB').innerHTML += `<div class="dot" id="dotB-${i}"></div>`;
+            }
+            updateTurnVisuals();
+        }
+
+        function updateTurnVisuals() {
+            const attacker = teamNames[turnOfAttacker];
+            const defender = (turnOfAttacker === "A") ? teamNames.B : teamNames.A;
+
+            if (phase === "PORTERO") {
+                document.getElementById('instruction').innerText = `PORTERO: ${defender}`;
+                document.getElementById('overlay-msg').innerText = `TURNO: PORTERO (${defender})`;
+                document.getElementById('overlay-p').innerText = `EL LANZADOR DEL (${attacker}) DEBE DARSE LA VUELTA`;
+            } else {
+                document.getElementById('instruction').innerText = `LANZA: ${attacker}`;
+                document.getElementById('overlay-msg').innerText = `TURNO: LANZADOR (${attacker})`;
+                document.getElementById('overlay-p').innerText = `EL PORTERO DEL (${defender}) DEBE ESPERAR`;
+            }
+
+            document.getElementById('labelA').classList.toggle('active-team', turnOfAttacker === "A");
+            document.getElementById('labelB').classList.toggle('active-team', turnOfAttacker === "B");
+        }
+
+        function handleClick(color) {
+            if (isProcessing) return;
+            if (phase === "PORTERO") {
+                goalkeeperChoice = color;
+                phase = "LANZADOR";
+                updateTurnVisuals();
+                document.getElementById('privacy-overlay').classList.remove('hidden');
+            } else {
+                isProcessing = true;
+                document.getElementById('goal-frame').classList.add('disabled'); 
+                resolveShot(color);
+            }
+        }
+
+        function resolveShot(playerChoice) {
+            const isGoal = playerChoice !== goalkeeperChoice;
+            const currentTeamKey = "team" + turnOfAttacker;
+            
+            stats[currentTeamKey].push(isGoal);
+            updateMarker(turnOfAttacker, stats[currentTeamKey].length - 1, isGoal);
+            
+            showResultPopup(isGoal);
+            playSound(isGoal ? 'snd-gol' : 'snd-fallo');
+
+            setTimeout(() => {
+                hideResultPopup();
+                
+                if (checkMatchEnd()) return; // Si hay ganador, paramos aquí
+
+                turnOfAttacker = (turnOfAttacker === "A") ? "B" : "A";
+                phase = "PORTERO";
+                updateTurnVisuals();
+                
+                isProcessing = false; 
+                document.getElementById('goal-frame').classList.remove('disabled');
+                document.getElementById('privacy-overlay').classList.remove('hidden');
+            }, 2600);
+        }
+
+        function hideOverlay() {
+            document.getElementById('privacy-overlay').classList.add('hidden');
+            if (phase === "LANZADOR") playSound('snd-silbato');
+        }
+
+        function showResultPopup(isGoal) {
+            const p = document.getElementById('result-popup');
+            const t = document.getElementById('popup-text');
+            t.innerText = isGoal ? "¡GOL!" : "¡FALLO!";
+            t.style.color = isGoal ? "var(--win-green)" : "var(--lose-red)";
+            p.classList.add('show');
+        }
+
+        function hideResultPopup() {
+            document.getElementById('result-popup').classList.remove('show');
+        }
+
+        function playSound(id) {
+            const s = document.getElementById(id);
+            s.currentTime = 0;
+            s.play().catch(() => {});
+        }
+
+        function updateMarker(team, index, isGoal) {
+            let dot = document.getElementById(`dot${team}-${index}`);
+            if (!dot) { 
+                dot = document.createElement('div');
+                dot.className = 'dot';
+                dot.id = `dot${team}-${index}`;
+                document.getElementById(`dots${team}`).appendChild(dot);
+            }
+            dot.classList.add(isGoal ? 'goal' : 'miss');
+            dot.innerHTML = isGoal ? '<i class="fa-solid fa-check"></i>' : '<i class="fa-solid fa-xmark"></i>';
+        }
+
+        function checkMatchEnd() {
+            const a = stats.teamA;
+            const b = stats.teamB;
+            if (a.length >= 5 && b.length >= 5 && a.length === b.length) {
+                const goalsA = a.filter(x => x).length;
+                const goalsB = b.filter(x => x).length;
+                if (goalsA !== goalsB) {
+                    showFinalWinner(goalsA, goalsB);
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function showFinalWinner(gA, gB) {
+            const winner = gA > gB ? teamNames.A : teamNames.B;
+            document.getElementById('final-winner-name').innerText = winner;
+            document.getElementById('final-score').innerText = `${gA} - ${gB}`;
+            document.getElementById('end-screen').style.display = 'flex';
+        }
+    </script>
+</body>
+</html>

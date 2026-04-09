@@ -1,0 +1,217 @@
+        <h1 style="color: var(--fc-green); font-family: 'Archivo Black';">JORNADA 1</h1>
+        <div class="setup-grid">
+            <input type="text" class="setup-input" id="eq-0" value="REAL BETIS">
+            <input type="text" class="setup-input" id="eq-1" value="VALENCIA">
+            <input type="text" class="setup-input" id="eq-2" value="VILLARREAL">
+            <input type="text" class="setup-input" id="eq-3" value="SEVILLA">
+            <input type="text" class="setup-input" id="eq-4" value="REAL MADRID">
+            <input type="text" class="setup-input" id="eq-5" value="ATLÉTICO">
+            <input type="text" class="setup-input" id="eq-6" value="ATHLETIC">
+            <input type="text" class="setup-input" id="eq-7" value="BARCELONA">
+        </div>
+        <button class="btn-action" onclick="startGame()">EMPEZAR JORNADA</button>
+    </div>
+<!--  ***************************************************************************************** -->
+        <h1 style="color: var(--fc-green); font-family: 'Archivo Black';">JORNADA 2</h1>
+        <div class="setup-grid">
+            <input type="text" class="setup-input" id="eq-0" value="VILLARREAL">
+            <input type="text" class="setup-input" id="eq-1" value="REAL MADRID">
+            <input type="text" class="setup-input" id="eq-2" value="SEVILLA">
+            <input type="text" class="setup-input" id="eq-3" value="BARCELONA">
+            <input type="text" class="setup-input" id="eq-4" value="VALENCIA">
+            <input type="text" class="setup-input" id="eq-5" value="ATHLETIC">
+            <input type="text" class="setup-input" id="eq-6" value="ATLÉTICO">
+            <input type="text" class="setup-input" id="eq-7" value="REAL BETIS">
+        </div>
+        <button class="btn-action" onclick="startGame()">EMPEZAR JORNADA</button>
+    </div>
+<!--  ***************************************************************************************** -->
+        <h1 style="color: var(--fc-green); font-family: 'Archivo Black';">JORNADA 3</h1>
+        <div class="setup-grid">
+            <input type="text" class="setup-input" id="eq-0" value="ATHLETIC">
+            <input type="text" class="setup-input" id="eq-1" value="SEVILLA">
+            <input type="text" class="setup-input" id="eq-2" value="VALENCIA">
+            <input type="text" class="setup-input" id="eq-3" value="ATLÉTICO">
+            <input type="text" class="setup-input" id="eq-4" value="REAL MADRID">
+            <input type="text" class="setup-input" id="eq-5" value="BARCELONA">
+            <input type="text" class="setup-input" id="eq-6" value="REAL BETIS">
+            <input type="text" class="setup-input" id="eq-7" value="VILLARREAL">
+        </div>
+        <button class="btn-action" onclick="startGame()">EMPEZAR JORNADA</button>
+    </div>
+<!--  ***************************************************************************************** -->
+        <h1 style="color: var(--fc-green); font-family: 'Archivo Black';">JORNADA 4</h1>
+        <div class="setup-grid">
+            <input type="text" class="setup-input" id="eq-0" value="ATLÉTICO">
+            <input type="text" class="setup-input" id="eq-1" value="ATHLETIC">
+            <input type="text" class="setup-input" id="eq-2" value="BARCELONA">
+            <input type="text" class="setup-input" id="eq-3" value="REAL BETIS">
+            <input type="text" class="setup-input" id="eq-4" value="VILLARREAL">
+            <input type="text" class="setup-input" id="eq-5" value="VALENCIA">
+            <input type="text" class="setup-input" id="eq-6" value="SEVILLA">
+            <input type="text" class="setup-input" id="eq-7" value="REAL MADRID">
+        </div>
+        <button class="btn-action" onclick="startGame()">EMPEZAR JORNADA</button>
+    </div>
+<!--  ***************************************************************************************** -->
+        <h1 style="color: var(--fc-green); font-family: 'Archivo Black';">JORNADA 5</h1>
+        <div class="setup-grid">
+            <input type="text" class="setup-input" id="eq-0" value="VALENCIA">
+            <input type="text" class="setup-input" id="eq-1" value="BARCELONA">
+            <input type="text" class="setup-input" id="eq-2" value="REAL BETIS">
+            <input type="text" class="setup-input" id="eq-3" value="SEVILLA">
+            <input type="text" class="setup-input" id="eq-4" value="ATLÉTICO">
+            <input type="text" class="setup-input" id="eq-5" value="VILLARREAL">
+            <input type="text" class="setup-input" id="eq-6" value="REAL MADRID">
+            <input type="text" class="setup-input" id="eq-7" value="ATHLETIC">
+        </div>
+        <button class="btn-action" onclick="startGame()">EMPEZAR JORNADA</button>
+    </div>
+<!--  ***************************************************************************************** -->
+        <h1 style="color: var(--fc-green); font-family: 'Archivo Black';">JORNADA 6</h1>
+        <div class="setup-grid">
+            <input type="text" class="setup-input" id="eq-0" value="BARCELONA">
+            <input type="text" class="setup-input" id="eq-1" value="ATLÉTICO">
+            <input type="text" class="setup-input" id="eq-2" value="ATHLETIC">
+            <input type="text" class="setup-input" id="eq-3" value="VILLARREAL">
+            <input type="text" class="setup-input" id="eq-4" value="REAL MADRID">
+            <input type="text" class="setup-input" id="eq-5" value="REAL BETIS">
+            <input type="text" class="setup-input" id="eq-6" value="SEVILLA">
+            <input type="text" class="setup-input" id="eq-7" value="VALENCIA">
+        </div>
+        <button class="btn-action" onclick="startGame()">EMPEZAR JORNADA</button>
+    </div>
+<!--  ***************************************************************************************** -->
+        <h1 style="color: var(--fc-green); font-family: 'Archivo Black';">JORNADA 7</h1>
+        <div class="setup-grid">
+            <input type="text" class="setup-input" id="eq-0" value="REAL BETIS">
+            <input type="text" class="setup-input" id="eq-1" value="ATHLETIC">
+            <input type="text" class="setup-input" id="eq-2" value="VILLARREAL">
+            <input type="text" class="setup-input" id="eq-3" value="BARCELONA">
+            <input type="text" class="setup-input" id="eq-4" value="ATLÉTICO">
+            <input type="text" class="setup-input" id="eq-5" value="SEVILLA">
+            <input type="text" class="setup-input" id="eq-6" value="VALENCIA">
+            <input type="text" class="setup-input" id="eq-7" value="REAL MADRID">
+        </div>
+        <button class="btn-action" onclick="startGame()">EMPEZAR JORNADA</button>
+    </div>
+<!--  ***************************************************************************************** -->
+        <h1 style="color: var(--fc-green); font-family: 'Archivo Black';">JORNADA 8</h1>
+        <div class="setup-grid">
+            <input type="text" class="setup-input" id="eq-0" value="VALENCIA">
+            <input type="text" class="setup-input" id="eq-1" value="REAL BETIS">
+            <input type="text" class="setup-input" id="eq-2" value="SEVILLA">
+            <input type="text" class="setup-input" id="eq-3" value="VILLARREAL">
+            <input type="text" class="setup-input" id="eq-4" value="ATLÉTICO">
+            <input type="text" class="setup-input" id="eq-5" value="REAL MADRID">
+            <input type="text" class="setup-input" id="eq-6" value="BARCELONA">
+            <input type="text" class="setup-input" id="eq-7" value="ATHLETIC">
+        </div>
+        <button class="btn-action" onclick="startGame()">EMPEZAR JORNADA</button>
+    </div>
+<!--  ***************************************************************************************** -->
+        <h1 style="color: var(--fc-green); font-family: 'Archivo Black';">JORNADA 9</h1>
+        <div class="setup-grid">
+            <input type="text" class="setup-input" id="eq-0" value="REAL MADRID">
+            <input type="text" class="setup-input" id="eq-1" value="VILLARREAL">
+            <input type="text" class="setup-input" id="eq-2" value="BARCELONA">
+            <input type="text" class="setup-input" id="eq-3" value="SEVILLA">
+            <input type="text" class="setup-input" id="eq-4" value="ATHLETIC">
+            <input type="text" class="setup-input" id="eq-5" value="VALENCIA">
+            <input type="text" class="setup-input" id="eq-6" value="REAL BETIS">
+            <input type="text" class="setup-input" id="eq-7" value="ATLÉTICO">
+        </div>
+        <button class="btn-action" onclick="startGame()">EMPEZAR JORNADA</button>
+    </div>
+<!--  ***************************************************************************************** -->
+        <h1 style="color: var(--fc-green); font-family: 'Archivo Black';">JORNADA 10</h1>
+        <div class="setup-grid">
+            <input type="text" class="setup-input" id="eq-0" value="SEVILLA">
+            <input type="text" class="setup-input" id="eq-1" value="ATHLETIC">
+            <input type="text" class="setup-input" id="eq-2" value="ATLÉTICO">
+            <input type="text" class="setup-input" id="eq-3" value="VALENCIA">
+            <input type="text" class="setup-input" id="eq-4" value="BARCELONA">
+            <input type="text" class="setup-input" id="eq-5" value="REAL MADRID">
+            <input type="text" class="setup-input" id="eq-6" value="VILLARREAL">
+            <input type="text" class="setup-input" id="eq-7" value="REAL BETIS">
+        </div>
+        <button class="btn-action" onclick="startGame()">EMPEZAR JORNADA</button>
+    </div>
+<!--  ***************************************************************************************** -->
+        <h1 style="color: var(--fc-green); font-family: 'Archivo Black';">JORNADA 11</h1>
+        <div class="setup-grid">
+            <input type="text" class="setup-input" id="eq-0" value="ATHLETIC">
+            <input type="text" class="setup-input" id="eq-1" value="ATLÉTICO">
+            <input type="text" class="setup-input" id="eq-2" value="REAL BETIS">
+            <input type="text" class="setup-input" id="eq-3" value="BARCELONA">
+            <input type="text" class="setup-input" id="eq-4" value="VALENCIA">
+            <input type="text" class="setup-input" id="eq-5" value="VILLARREAL">
+            <input type="text" class="setup-input" id="eq-6" value="REAL MADRID">
+            <input type="text" class="setup-input" id="eq-7" value="SEVILLA">
+        </div>
+        <button class="btn-action" onclick="startGame()">EMPEZAR JORNADA</button>
+    </div>
+<!--  ***************************************************************************************** -->
+        <h1 style="color: var(--fc-green); font-family: 'Archivo Black';">JORNADA 12</h1>
+        <div class="setup-grid">
+            <input type="text" class="setup-input" id="eq-0" value="BARCELONA">
+            <input type="text" class="setup-input" id="eq-1" value="VALENCIA">
+            <input type="text" class="setup-input" id="eq-2" value="SEVILLA">
+            <input type="text" class="setup-input" id="eq-3" value="REAL BETIS">
+            <input type="text" class="setup-input" id="eq-4" value="VILLARREAL">
+            <input type="text" class="setup-input" id="eq-5" value="ATLÉTICO">
+            <input type="text" class="setup-input" id="eq-6" value="ATHLETIC">
+            <input type="text" class="setup-input" id="eq-7" value="REAL MADRID">
+        </div>
+        <button class="btn-action" onclick="startGame()">EMPEZAR JORNADA</button>
+    </div>
+<!--  ***************************************************************************************** -->
+        <h1 style="color: var(--fc-green); font-family: 'Archivo Black';">JORNADA 13</h1>
+        <div class="setup-grid">
+            <input type="text" class="setup-input" id="eq-0" value="ATLÉTICO">
+            <input type="text" class="setup-input" id="eq-1" value="BARCELONA">
+            <input type="text" class="setup-input" id="eq-2" value="VILLARREAL">
+            <input type="text" class="setup-input" id="eq-3" value="ATHLETIC">
+            <input type="text" class="setup-input" id="eq-4" value="REAL BETIS">
+            <input type="text" class="setup-input" id="eq-5" value="REAL MADRID">
+            <input type="text" class="setup-input" id="eq-6" value="VALENCIA">
+            <input type="text" class="setup-input" id="eq-7" value="SEVILLA">
+        </div>
+        <button class="btn-action" onclick="startGame()">EMPEZAR JORNADA</button>
+    </div>
+<!--  ***************************************************************************************** -->
+        <h1 style="color: var(--fc-green); font-family: 'Archivo Black';">JORNADA 14</h1>
+        <div class="setup-grid">
+            <input type="text" class="setup-input" id="eq-0" value="ATHLETIC">
+            <input type="text" class="setup-input" id="eq-1" value="REAL BETIS">
+            <input type="text" class="setup-input" id="eq-2" value="BARCELONA">
+            <input type="text" class="setup-input" id="eq-3" value="VILLARREAL">
+            <input type="text" class="setup-input" id="eq-4" value="SEVILLA">
+            <input type="text" class="setup-input" id="eq-5" value="ATLÉTICO">
+            <input type="text" class="setup-input" id="eq-6" value="REAL MADRID">
+            <input type="text" class="setup-input" id="eq-7" value="VALENCIA">
+        </div>
+        <button class="btn-action" onclick="startGame()">EMPEZAR JORNADA</button>
+    </div>
+<!--  ***************************************************************************************** -->
+        <h1 style="color: var(--fc-green); font-family: 'Archivo Black';">AMISTOSOS</h1>
+        <div class="setup-grid">
+            <input type="text" class="setup-input" id="eq-0" value="???">
+            <input type="text" class="setup-input" id="eq-1" value="???">
+            <input type="text" class="setup-input" id="eq-2" value="???">
+            <input type="text" class="setup-input" id="eq-3" value="???">
+            <input type="text" class="setup-input" id="eq-4" value="???">
+            <input type="text" class="setup-input" id="eq-5" value="???">
+            <input type="text" class="setup-input" id="eq-6" value="???">
+            <input type="text" class="setup-input" id="eq-7" value="???">
+        </div>
+        <button class="btn-action" onclick="startGame()">EMPEZAR PARTIDOS</button>
+    </div>
+<!--  ***************************************************************************************** -->
+
+
+
+
+
+
+

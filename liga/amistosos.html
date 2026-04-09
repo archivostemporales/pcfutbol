@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JORNADA</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Barlow:wght@400;700;900&display=swap');
+
+        :root {
+            --fc-green: #ccff00;
+            --fc-blue: #00e5ff;
+            --fc-pink: #ff007a;
+            --dark-bg: #050d14;
+        }
+
+        body {
+            font-family: 'Barlow', sans-serif;
+            background-color: var(--dark-bg);
+            background-image: radial-gradient(circle at 50% 10%, rgba(0, 229, 255, 0.1) 0%, transparent 50%);
+            color: white; margin: 0; display: flex; flex-direction: column; align-items: center; text-transform: uppercase;
+        }
+
+        .container { width: 100%; max-width: 1000px; padding: 20px; box-sizing: border-box; }
+
+        /* PANTALLA DE CONFIGURACIÓN */
+        #setupScreen {
+            position: fixed; top:0; left:0; width:100%; height:100%;
+            background: var(--dark-bg); z-index: 200; display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .setup-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px; }
+        .setup-input { 
+            background: rgba(255,255,255,0.05); border: 1px solid var(--fc-blue); color: white;
+            padding: 10px; font-family: 'Barlow'; font-weight: 700; text-transform: uppercase; border-radius: 5px;
+        }
+
+        /* INTERFAZ DE JUEGO */
+        .header-panel { text-align: center; margin-bottom: 10px; }
+        .phase-badge { color: var(--fc-green); letter-spacing: 3px; font-weight: 900; border-bottom: 2px solid var(--fc-green); display: inline-block; padding-bottom: 5px; }
+        
+        .duel-display { 
+            font-size: 1.3rem; font-weight: 900; text-align: center; margin: 15px 0; 
+            padding: 10px; background: rgba(255,255,255,0.05); border-radius: 10px; color: var(--fc-blue);
+            min-height: 1.5em;
+        }
+
+        .match-card {
+            background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px; padding: 15px; display: grid; grid-template-columns: 1fr 70px 30px 70px 1fr 100px;
+            align-items: center; gap: 10px; margin-bottom: 10px; transition: 0.3s;
+        }
+
+        @keyframes blinkAtk { 0% { opacity: 1; color: var(--fc-green); } 50% { opacity: 0.3; color: #fff; } 100% { opacity: 1; color: var(--fc-green); } }
+        .is-attacking { animation: blinkAtk 0.8s infinite; font-weight: 900; }
+
+        .score { font-size: 1.8rem; font-family: 'Archivo Black'; color: var(--fc-green); margin: 0 5px; }
+        input[type="number"] { 
+            background: black; color: white; border: 1px solid #444; padding: 8px; width: 50px; 
+            text-align: center; font-size: 1.2rem; font-weight: 900; border-radius: 5px; 
+        }
+        input:disabled { opacity: 0.1; border: none; cursor: not-allowed; }
+        
+        .stat-box { font-size: 1.8rem; font-weight: 900; color: var(--fc-pink); text-align: center; margin: 15px; height: 40px; }
+        
+        .btn-action {
+            background: #fff; color: #000; border: none; padding: 15px 40px; font-weight: 900; 
+            cursor: pointer; clip-path: polygon(5% 0%, 100% 0%, 95% 100%, 0% 100%); transition: 0.3s;
+        }
+        .btn-action:hover:not(:disabled) { background: var(--fc-green); transform: scale(1.05); }
+        .btn-action:disabled { opacity: 0.2; cursor: not-allowed; }
+
+        #btnEventoFinal { background: var(--fc-green); color: black; display: none; margin: 20px auto; }
+
+        .modal {
+            display: none; position: fixed; top:0; left:0; width:100%; height:100%;
+            background: var(--dark-bg); z-index: 100; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+        }
+        .event-card { background: rgba(255,255,255,0.05); border: 2px solid var(--fc-green); padding: 30px; border-radius: 20px; max-width: 500px; }
+
+.pos-portero { color: #ffff00 !important; }
+.pos-defensa { color: #00e5ff !important; }
+.pos-medio { color: #ccff00 !important; }
+.pos-delantero { color: #ff0000 !important; }
+.loc-color { color: #ffffff !important; }
+.vis-color { color: #aaaaaa !important; }
+.pos-vs { color: #ff007a !important; }
+
+    </style>
+</head>
+<body>
+<audio id="sonidoAmbiente" src="ambiente.mp3" loop></audio>
+<audio id="sonidoPitido" src="pitido.mp3"></audio>
+<audio id="sonidoPitidos2" src="pitidos2.mp3"></audio>
+    <div id="setupScreen">
+<!--  ********************************************NÚMERO DE JORNADA************************************************************* -->
+        <h1 style="color: var(--fc-green); font-family: 'Archivo Black';">AMISTOSOS</h1>
+        <div class="setup-grid">
+            <input type="text" class="setup-input" id="eq-0" value="REAL MADRID">
+            <input type="text" class="setup-input" id="eq-1" value="BARCELONA">
+            <input type="text" class="setup-input" id="eq-2" value="REAL BETIS">
+            <input type="text" class="setup-input" id="eq-3" value="SEVILLA">
+            <input type="text" class="setup-input" id="eq-4" value="ATLÉTICO">
+            <input type="text" class="setup-input" id="eq-5" value="ATHLETIC">
+            <input type="text" class="setup-input" id="eq-6" value="VALENCIA">
+            <input type="text" class="setup-input" id="eq-7" value="VILLARREAL">
+        </div>
+        <button class="btn-action" onclick="startGame()">EMPEZAR PARTIDOS</button>
+    </div>
+
+<!--  *************************************************************************************************************************** -->
+    <div class="container">
+        <div class="header-panel">
+            <div class="phase-badge" id="phaseNum">FASE 1 / 20</div>
+            <div class="duel-display" id="duelTitle">PREPARANDO...</div>
+        </div>
+
+        <div class="stat-box" id="statDisplay">🎲 ESPERANDO</div>
+
+        <div id="matchesContainer"></div>
+
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 15px; margin-top: 20px;">
+            <div style="display: flex; gap: 20px;">
+                <button class="btn-action" id="btnSortear" onclick="sortearAtributo()">SORTEAR</button>
+                <button class="btn-action" id="btnAccion" onclick="ejecutar()" disabled>LANZAR DADOS</button>
+            </div>
+            <button class="btn-action" id="btnEventoFinal" onclick="showFinalEvent()">FINALIZAR Y VER EVENTO</button>
+        </div>
+    </div>
+
+    <div class="modal" id="modalFinal">
+        <div class="event-card">
+            <div id="evIcon" style="font-size: 3rem;">🎲</div>
+            <h2 id="evTitle" style="color: var(--fc-green);">EVENTO DE LIGA</h2>
+            <p id="evMsg" style="font-size: 1.2rem;"></p>
+            <div id="penaltyZone" style="display: none; border-top: 1px solid #333; margin-top: 20px; padding-top: 20px;">
+                <div id="penaltyResult" style="font-size: 1.5rem; font-weight: 900; margin-bottom: 15px;"></div>
+                <button class="btn-action" id="btnShoot" onclick="shootPenalty()" style="background: var(--fc-pink); color: white;">LANZAR PENALTI</button>
+            </div>
+            <div style="margin-top: 30px; display: flex; gap: 10px; justify-content: center;">
+
+<!--  ********************************************BOTÓN REPETIR JORNADA************************************************************* -->
+<!--                <button class="btn-action" id="btnNextJornada" onclick="location.reload()">REPETIR JORNADA</button> -->
+<!-- 		<button class="btn-action" id="btnNextJornada" onclick="window.location.href='jornada2.html'">SIGUIENTE JORNADA</button> -->
+
+                <button class="btn-action" onclick="window.location.href='../calendario.html'" style="background: var(--fc-blue);">📅 CALENDARIO</button>
+            </div>
+        </div>
+    </div>
+
+<script>
+    let equipos = [];
+    const posiciones = ["Portero", "Defensa", "Medio Izquierdo", "Medio Derecho", "Delantero"];
+    const atributos = ["RITMO ⚡", "TIRO ⚽", "PASE 🎯", "REGATE 🪄", "DEFENSA 🛡️", "FÍSICO 💪"];
+    
+    let faseIdx = 0;
+    let equiposActivos = [true, true, true, true];
+    let marcadores = [0,0,0,0,0,0,0,0];
+
+    const sequence = [
+        { name: "⚽ DEFENSA LOCAL vs DEFENSA VISITANTE", atk: "L" },
+        { name: "⚽ DEFENSA LOCAL vs PORTERO VISITANTE", atk: "L", isGoalPhase: true },
+        { name: "DEFENSA LOCAL vs DEFENSA VISITANTE ⚽", atk: "V" },
+        { name: "PORTERO LOCAL vs DEFENSA VISITANTE ⚽", atk: "V", isGoalPhase: true },
+        { name: "⚽ MEDIO IZQUIERDO LOCAL vs DEFENSA VISITANTE", atk: "L" },
+        { name: "⚽ MEDIO IZQUIERDO LOCAL vs PORTERO VISITANTE", atk: "L", isGoalPhase: true },
+        { name: "DEFENSA LOCAL vs MEDIO IZQUIERDO VISITANTE ⚽", atk: "V" },
+        { name: "PORTERO LOCAL vs MEDIO IZQUIERDO VISITANTE ⚽", atk: "V", isGoalPhase: true },
+        { name: "⚽ MEDIO DERECHO LOCAL vs DEFENSA VISITANTE", atk: "L" },
+        { name: "⚽ MEDIO DERECHO LOCAL vs PORTERO VISITANTE", atk: "L", isGoalPhase: true },
+        { name: "DEFENSA LOCAL vs MEDIO DERECHO VISITANTE ⚽", atk: "V" },
+        { name: "PORTERO LOCAL vs MEDIO DERECHO VISITANTE ⚽", atk: "V", isGoalPhase: true },
+        { name: "⚽ DELANTERO LOCAL vs DEFENSA VISITANTE", atk: "L" },
+        { name: "⚽ DELANTERO LOCAL vs PORTERO VISITANTE", atk: "L", isGoalPhase: true },
+        { name: "DEFENSA LOCAL vs DELANTERO VISITANTE ⚽", atk: "V" },
+        { name: "PORTERO LOCAL vs DELANTERO VISITANTE ⚽", atk: "V", isGoalPhase: true },
+        { name: "⚽ DELANTERO LOCAL vs DEFENSA VISITANTE", atk: "L" },
+        { name: "⚽ DELANTERO LOCAL vs PORTERO VISITANTE", atk: "L", isGoalPhase: true },
+        { name: "DEFENSA LOCAL vs DELANTERO VISITANTE ⚽", atk: "V" },
+        { name: "PORTERO LOCAL vs DELANTERO VISITANTE ⚽", atk: "V", isGoalPhase: true }
+    ];
+
+    function startGame() {
+document.getElementById('sonidoAmbiente').play();
+    // Reproducir el sonido del silbato
+    document.getElementById('sonidoPitido').play();
+        for(let i=0; i<8; i++) {
+            equipos.push(document.getElementById(`eq-${i}`).value);
+        }
+        document.getElementById('setupScreen').style.display = 'none';
+        renderMatches();
+    }
+
+
+    function renderMatches() {
+        const container = document.getElementById('matchesContainer');
+        container.innerHTML = '';
+        const f = sequence[faseIdx];
+        if (!f) return;
+
+        for(let i=0; i<4; i++) {
+            const idL = i*2; const idV = i*2+1;
+            const canPlay = equiposActivos[i];
+            const blinkL = (canPlay && f.atk === "L") ? 'is-attacking' : '';
+            const blinkV = (canPlay && f.atk === "V") ? 'is-attacking' : '';
+
+            container.innerHTML += `
+                <div class="match-card" style="opacity: ${canPlay ? 1 : 0.2}">
+                    <div class="${blinkL}" style="text-align:right">${equipos[idL]} <span class="score">${marcadores[idL]}</span></div>
+                    <input type="number" id="in-${idL}" ${!canPlay ? 'disabled' : ''} placeholder="0">
+                    <div style="color:#444; font-weight:900; text-align:center">VS</div>
+                    <input type="number" id="in-${idV}" ${!canPlay ? 'disabled' : ''} placeholder="0">
+                    <div class="${blinkV}">${equipos[idV]} <span class="score">${marcadores[idV]}</span></div>
+                    <div id="status-${i}" style="font-weight:700; font-size:0.7rem; text-align:center">---</div>
+                </div>`;
+        }
+
+let textoFinal = f.name
+.replace(/PORTERO/g, '<span class="pos-portero">PORTERO</span>')
+.replace(/DEFENSA/g, '<span class="pos-defensa">DEFENSA</span>')
+.replace(/MEDIO IZQUIERDO/g, '<span class="pos-medio">MEDIO IZQUIERDO</span>')
+.replace(/MEDIO DERECHO/g, '<span class="pos-medio">MEDIO DERECHO</span>')
+.replace(/DELANTERO/g, '<span class="pos-delantero">DELANTERO</span>')
+.replace(/LOCAL/g, '<span class="loc-color">LOCAL</span>')
+.replace(/VISITANTE/g, '<span class="vis-color">VISITANTE</span>')
+.replace(/vs/g, '<span class="pos-vs">vs</span>');
+
+document.getElementById('duelTitle').innerHTML = textoFinal;
+
+        document.getElementById('phaseNum').innerText = `FASE ${faseIdx + 1} / ${sequence.length}`;
+    }
+
+    function sortearAtributo() {
+        const atr = atributos[Math.floor(Math.random()*atributos.length)];
+        document.getElementById('statDisplay').innerText = atr;
+        document.getElementById('btnAccion').disabled = false;
+        document.getElementById('btnSortear').disabled = true;
+    }
+
+    function ejecutar() {
+        const f = sequence[faseIdx];
+        if (!f.isGoalPhase) dueloCampo();
+        else dueloPortero();
+        document.getElementById('btnAccion').disabled = true;
+        document.getElementById('btnSortear').disabled = false;
+    }
+
+    function dueloCampo() {
+        const f = sequence[faseIdx];
+        const nuevosActivos = [false, false, false, false];
+        for(let i=0; i<4; i++) {
+            let idA = (f.atk === "L") ? i*2 : i*2+1;
+            let idD = (f.atk === "L") ? i*2+1 : i*2;
+            let vA = parseInt(document.getElementById(`in-${idA}`).value) || 0;
+            let vD = parseInt(document.getElementById(`in-${idD}`).value) || 0;
+            if ( ((Math.floor(Math.random()*6)+1) * 10 ) + vA > ( (Math.floor(Math.random()*6)+1) * 10 ) + vD ) {
+                nuevosActivos[i] = true;
+                document.getElementById(`status-${i}`).innerText = "PASA A PORTERÍA";
+                document.getElementById(`status-${i}`).style.color = "var(--fc-blue)";
+            } else {
+                nuevosActivos[i] = false;
+                document.getElementById(`status-${i}`).innerText = "BLOQUEADO";
+                document.getElementById(`status-${i}`).style.color = "var(--fc-pink)";
+            }
+        }
+        equiposActivos = nuevosActivos;
+        avanzarFase();
+    }
+
+    function dueloPortero() {
+        const f = sequence[faseIdx];
+        for(let i=0; i<4; i++) {
+            if(!equiposActivos[i]) continue;
+            let idA = (f.atk === "L") ? i*2 : i*2+1;
+            let idD = (f.atk === "L") ? i*2+1 : i*2;
+            let vA = parseInt(document.getElementById(`in-${idA}`).value) || 0;
+            let vP = parseInt(document.getElementById(`in-${idD}`).value) || 0;
+            if ( ((Math.floor(Math.random()*6)+1) * 10 ) + vA > ( (Math.floor(Math.random()*6)+1) * 10 ) + vP ) {
+                marcadores[idA]++;
+                document.getElementById(`status-${i}`).innerText = "¡GOOOL!";
+                document.getElementById(`status-${i}`).style.color = "var(--fc-green)";
+            } else {
+                document.getElementById(`status-${i}`).innerText = "PARADA";
+            }
+        }
+        equiposActivos = [true, true, true, true];
+        avanzarFase();
+    }
+
+function avanzarFase() {
+    // 1. Verificamos si acabamos de terminar la fase 20 (faseIdx es 19)
+    // Lo hacemos ANTES de sumar para que dé tiempo a ver los goles
+    if(faseIdx === sequence.length - 1) {
+        
+        // Actualizamos los marcadores una última vez para que se vea el gol de la fase 20
+        renderMatches(); 
+
+        // Retrasamos un segundo el final para que el usuario vea el "¡GOOOL!"
+        setTimeout(() => {
+            document.getElementById('duelTitle').innerText = "PARTIDOS FINALIZADOS";
+            document.getElementById('phaseNum').innerText = "FIN";
+            document.getElementById('btnSortear').style.display = 'none';
+            document.getElementById('btnAccion').style.display = 'none';
+            document.getElementById('btnEventoFinal').style.display = 'block';
+            document.getElementById('statDisplay').innerText = "🏁 FIN DEL TIEMPO REGLAMENTARIO";
+            
+            document.getElementById('sonidoPitidos2').play();
+            document.getElementById('sonidoPitido').play();
+        }, 1000); // 1000 milisegundos = 1 segundo de espera
+        
+        return; // Salimos de la función para que no siga sumando
+    }
+
+    // 2. Si no es el final, seguimos con la lógica normal
+    faseIdx++;
+
+    // Lógica de eventos aleatorios (lesiones/expulsiones)
+    if (faseIdx < sequence.length && Math.random() < 0.05) {
+        const equipoAfectado = equipos[Math.floor(Math.random() * equipos.length)];
+        const posAfectada = posiciones[Math.floor(Math.random() * posiciones.length)];
+        const azarEvento = Math.random(); 
+        let mensaje = "";
+        document.getElementById('sonidoPitido').play();
+
+        if (azarEvento < 0.70) { 
+            const semanas = Math.floor(Math.random() * 5) + 1;
+            mensaje = "🚑 ¡ATENCIÓN!\n\nEl " + posAfectada + " del " + equipoAfectado + " se ha lesionado.\nEstará fuera " + semanas + " semanas.";
+        } else {
+            mensaje = "🔴 ¡TARJETA ROJA!\n\nEl " + posAfectada + " del " + equipoAfectado + " ha sido expulsado.";
+        }
+        alert(mensaje);
+    }
+
+    renderMatches();
+    document.getElementById('statDisplay').innerText = "🎲 ESPERANDO";
+}
+
+
+
+
+    function getRand(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+    function showFinalEvent() {
+        document.getElementById('modalFinal').style.display = 'flex';
+        const ev = Math.floor(Math.random() * 6) + 1;
+        const equipo = getRand(equipos);
+        const pos = getRand(posiciones);
+        let msg = "";
+        switch(ev) {
+            case 1: msg = `📺 VAR: SE ANULA EL ÚLTIMO GOL MARCADO POR EL <strong>${equipo}</strong>.`; break;
+            case 2:
+                const semanas = Math.floor(Math.random() * 6) + 1;
+                msg = `🚑 LESIONADO EL <strong>${pos}</strong> DEL <strong>${equipo}</strong>. ESTARÁ <strong>${semanas}</strong> SEMANAS SIN JUGAR.`;
+                break;
+            case 3: msg = `🔴 EXPULSADO EL <strong>${pos}</strong> DEL <strong>${equipo}</strong>. ESTARÁ <strong>1 PARTIDO</strong> SIN JUGAR.`; break;
+            case 4:
+                msg = `🥅 PENALTI A FAVOR DEL <strong>${equipo}</strong>. CON 3, 4, 5 ó 6 ES GOL.`;
+                document.getElementById('penaltyZone').style.display = 'block';
+                document.getElementById('btnNextJornada').style.visibility = 'hidden';
+                break;
+            case 5: msg = `🏃 EL <strong>${pos}</strong> DEL <strong>${equipo}</strong> HA PAGADO SU CLÁUSULA Y SE HA MARCHADO A OTRO EQUIPO.`; break;
+            case 6:
+                const esMulta = Math.random() > 0.5;
+                msg = esMulta ? `🏁 EL <strong>${equipo}</strong> HA SIDO MULTADO CON <strong>10 MILLONES</strong>.` : `💵 EL <strong>${equipo}</strong> HA INGRESADO <strong>10 MILLONES</strong> POR PUBLICIDAD.`;
+                break;
+        }
+        document.getElementById('evIcon').innerText = "🎲 " + ev;
+        document.getElementById('evMsg').innerHTML = msg;
+    }
+
+    function shootPenalty() {
+        const roll = Math.floor(Math.random() * 6) + 1;
+        const resDiv = document.getElementById('penaltyResult');
+        const isGoal = roll >= 3;
+        if (isGoal) { new Audio('gol.mp3').play(); } else { new Audio('fallo.mp3').play(); }
+        resDiv.innerText = `DADO: ${roll} -> ${isGoal ? "¡GOOOL!" : "¡FALLO!"}`;
+        resDiv.style.color = isGoal ? "var(--fc-green)" : "var(--fc-pink)";
+        document.getElementById('btnShoot').style.display = 'none';
+        document.getElementById('btnNextJornada').style.visibility = 'visible';
+    }
+</script>
+</body>
+</html>
