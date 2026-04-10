@@ -169,9 +169,23 @@
         });
     }
 
-    function fichar(nombre) {
-        alert("Negociando con el representante de " + nombre);
-    }
+function fichar(nombre) {
+    const j = seleccionActual.find(jug => jug.nombre === nombre);
+    if (!j) return;
+
+    // Calculamos la media
+    const mediaCalculada = Math.floor((j.rit + j.tir + j.pas + j.reg + j.def + j.fis + j.med) / 7);
+
+    // Guardamos en memoria por si acaso
+    localStorage.setItem('jugadorNegociando', JSON.stringify({
+        nombre: j.nombre,
+        media: mediaCalculada
+    }));
+
+    // REDIRECCIÓN CON PARÁMETRO (Inmune a errores de memoria)
+    window.location.href = `fichajes_negociacion.html?nombre=${encodeURIComponent(j.nombre)}&media=${mediaCalculada}`;
+}
+
 </script>
 </body>
 </html>

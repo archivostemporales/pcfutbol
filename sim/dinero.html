@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>FIFA 2026 - Guía de Premios Económicos</title>
+    <style>
+        :root {
+            --fifa-blue: #020b2e;
+            --fifa-gold: #c5a358;
+            --fifa-neon: #00f2ff;
+            --fifa-white: #ffffff;
+            --fifa-card-bg: rgba(2, 11, 46, 0.9);
+        }
+
+        body {
+            background-color: #050505;
+            background-image: radial-gradient(circle at center, #0a164a 0%, #000 80%);
+            color: var(--fifa-white);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 40px;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 900px;
+            border: 1px solid rgba(197, 163, 88, 0.3);
+            background: var(--fifa-card-bg);
+            padding: 40px;
+            position: relative;
+            box-shadow: 0 0 40px rgba(0, 242, 255, 0.15);
+        }
+
+        .header {
+            border-left: 6px solid var(--fifa-gold);
+            padding-left: 20px;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 3em;
+            margin: 0;
+            text-transform: uppercase;
+            font-style: italic;
+            letter-spacing: -1px;
+            color: var(--fifa-white);
+        }
+
+        .sub-header {
+            color: var(--fifa-gold);
+            font-weight: bold;
+            letter-spacing: 4px;
+            font-size: 0.9em;
+        }
+
+        .section-title {
+            background: linear-gradient(90deg, var(--fifa-gold), transparent);
+            padding: 8px 15px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-top: 30px;
+            color: black;
+            font-size: 1.1em;
+        }
+
+        .info-box {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .reward-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .reward-name {
+            font-weight: 300;
+            font-size: 1.1em;
+        }
+
+        .reward-value {
+            font-weight: bold;
+            color: var(--fifa-neon);
+            font-size: 1.3em;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .main-income {
+            grid-column: span 2;
+            background: linear-gradient(45deg, #020b2e, #0a164a);
+            border: 2px solid var(--fifa-gold);
+            text-align: center;
+            padding: 30px;
+        }
+
+        .income-title {
+            font-size: 1.4em;
+            margin-bottom: 5px;
+        }
+
+        .income-amount {
+            font-size: 3.5em;
+            font-weight: 900;
+            color: var(--fifa-gold);
+            text-shadow: 0 0 15px rgba(197, 163, 88, 0.5);
+        }
+
+        /* BOTÓN VOLVER */
+        .navigation-box {
+            margin-top: 50px;
+            text-align: center;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 30px;
+        }
+
+        .btn-return {
+            background: transparent;
+            color: var(--fifa-white);
+            border: 2px solid var(--fifa-gold);
+            padding: 15px 40px;
+            font-size: 1.1em;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-return:hover {
+            background: var(--fifa-gold);
+            color: black;
+            box-shadow: 0 0 20px rgba(197, 163, 88, 0.4);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            background: var(--fifa-neon);
+            color: black;
+            font-weight: bold;
+            font-size: 0.7em;
+            border-radius: 3px;
+            vertical-align: middle;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <div class="sub-header">OFFICIAL FINANCIAL GUIDE</div>
+        <h1>GUÍA ECONÓMICA</h1>
+    </div>
+
+    <div class="main-income">
+        <div class="income-title">CADA PARTIDO JUGADO EN CASA</div>
+        <div class="income-amount">5.000.000 €</div>
+        <p style="color: var(--fifa-gold); margin: 0; font-size: 0.9em;">RECAUDACIÓN AUTOMÁTICA DE TAQUILLA</p>
+    </div>
+
+    <div class="section-title">Premios Liga y Copa</div>
+    <div class="info-box">
+        <div class="reward-card">
+            <span class="reward-name">CAMPEÓN DE LIGA</span>
+            <span class="reward-value">60.000.000 €</span>
+        </div>
+        <div class="reward-card">
+            <span class="reward-name">2º PUESTO LIGA</span>
+            <span class="reward-value">40.000.000 €</span>
+        </div>
+        <div class="reward-card">
+            <span class="reward-name">3º PUESTO LIGA</span>
+            <span class="reward-value">30.000.000 €</span>
+        </div>
+        <div class="reward-card">
+            <span class="reward-name">GANADOR DE COPA</span>
+            <span class="reward-value">20.000.000 €</span>
+        </div>
+    </div>
+
+    <div class="section-title">UEFA Champions League</div>
+    <div class="info-box">
+        <div class="reward-card" style="grid-column: span 2; border: 1px solid var(--fifa-gold);">
+            <span class="reward-name"><span class="badge">TITLE</span> GANADOR DE LA CHAMPIONS</span>
+            <span class="reward-value" style="font-size: 1.8em;">80.000.000 €</span>
+        </div>
+        <div class="reward-card">
+            <span class="reward-name">VICTORIA (POR PARTIDO)</span>
+            <span class="reward-value">3.000.000 €</span>
+        </div>
+        <div class="reward-card">
+            <span class="reward-name">EMPATE (POR PARTIDO)</span>
+            <span class="reward-value">1.000.000 €</span>
+        </div>
+    </div>
+
+    <div class="navigation-box">
+        <a href="fichajes.html" class="btn-return">Volver al Menú de Fichajes</a>
+    </div>
+</div>
+
+</body>
+</html>

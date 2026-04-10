@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>FIFA 2026 - Negociación</title>
+    <style>
+        :root {
+            --fifa-blue: #020b2e; --fifa-gold: #c5a358;
+            --fifa-neon: #00f2ff; --fifa-white: #ffffff;
+        }
+        body {
+            background-color: #050505;
+            background-image: radial-gradient(circle at center, #0a164a 0%, #000 80%);
+            color: white; font-family: 'Segoe UI', sans-serif;
+            margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh;
+        }
+        .card {
+            width: 450px; background: rgba(2, 11, 46, 0.95);
+            border: 2px solid var(--fifa-gold); padding: 30px; text-align: center;
+            box-shadow: 0 0 30px rgba(0, 242, 255, 0.2);
+        }
+        .jugador-info {
+            background: rgba(255,255,255,0.05); padding: 15px;
+            margin: 20px 0; border-left: 4px solid var(--fifa-neon);
+        }
+        .input-media {
+            background: black; border: 2px solid var(--fifa-gold);
+            color: var(--fifa-neon); font-size: 3em; width: 120px;
+            text-align: center; margin: 10px 0; outline: none; font-family: serif;
+        }
+        .btn {
+            background: var(--fifa-gold); color: black; border: none;
+            padding: 15px 30px; font-weight: bold; text-transform: uppercase;
+            cursor: pointer; width: 100%; margin-top: 20px; font-family: inherit;
+        }
+        .btn-volver {
+            background: transparent; color: white; border: 1px solid white;
+            margin-top: 10px; font-size: 0.8em; opacity: 0.7;
+        }
+        #resultado { font-size: 1.6em; margin-top: 20px; font-weight: bold; height: 45px; text-transform: uppercase; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <div style="color: var(--fifa-gold); font-size: 0.7em; letter-spacing: 4px;">NEGOTIATION PANEL</div>
+    
+    <div class="jugador-info">
+        <h2 id="display-nombre" style="margin:0;">CARGANDO...</h2>
+        <p style="margin:5px 0;">Media del Jugador: <span id="display-media" style="color:var(--fifa-neon); font-weight: bold;">--</span></p>
+    </div>
+
+    <label style="font-size: 0.8em; letter-spacing: 1px;">TU MEDIA DE EQUIPO:</label><br>
+    <input type="number" id="input-equipo" class="input-media" value="75" oninput="calcularProb()">
+
+    <div style="font-size: 1.2em; margin-top: 10px;">
+        Probabilidad de Éxito: <span id="val-prob" style="color:var(--fifa-gold); font-weight: bold;">--</span>%
+    </div>
+
+    <div id="resultado"></div>
+
+    <button id="btn-final" class="btn" onclick="negociar()">Enviar Oferta Final</button>
+    <button class="btn btn-volver" onclick="window.location.href='fichajes_ofertas.html'">Cancelar y Volver</button>
+</div>
+
+<script>
+    let jugadorData = { nombre: "", media: 0 };
+
+    function obtenerDatos() {
+        // Intentamos leer de la URL (MÉTODO 1: EL MÁS SEGURO)
+        const params = new URLSearchParams(window.location.search);
+        const nombreURL = params.get('nombre');
+        const mediaURL = params.get('media');
+
+        if (nombreURL && mediaURL) {
+            jugadorData.nombre = nombreURL;
+            jugadorData.media = parseInt(mediaURL);
+        } else {
+            // Intentamos leer de LocalStorage (MÉTODO 2)
+            const cache = localStorage.getItem('jugadorNegociando');
+            if (cache) {
+                const p = JSON.parse(cache);
+                jugadorData.nombre = p.nombre;
+                jugadorData.media = p.media;
+            }
+        }
+
+        // Si tenemos datos, los pintamos
+        if (jugadorData.nombre) {
+            document.getElementById('display-nombre').innerText = jugadorData.nombre.toUpperCase();
+            document.getElementById('display-media').innerText = jugadorData.media;
+            calcularProb();
+        } else {
+            document.getElementById('display-nombre').innerText = "ERROR DE DATOS";
+            document.getElementById('display-nombre').style.color = "red";
+        }
+    }
+
+    function calcularProb() {
+        const medEq = parseInt(document.getElementById('input-equipo').value) || 0;
+        const medJug = jugadorData.media;
+        
+        let prob = 50 + (medEq - medJug) * 2;
+        prob = Math.max(5, Math.min(95, prob));
+        
+        document.getElementById('val-prob').innerText = prob;
+        return prob;
+    }
+
+    function negociar() {
+        const prob = calcularProb();
+        const azar = Math.floor(Math.random() * 100) + 1;
+        const resDiv = document.getElementById('resultado');
+        const btn = document.getElementById('btn-final');
+
+        btn.disabled = true;
+        btn.style.opacity = "0.5";
+
+        setTimeout(() => {
+            if (azar <= prob) {
+                resDiv.innerText = "¡CONTRATO FIRMADO!";
+                resDiv.style.color = "#2ecc71";
+            } else {
+                resDiv.innerText = "OFERTA RECHAZADA";
+                resDiv.style.color = "#ff4d4d";
+            }
+        }, 600);
+    }
+
+    // Ejecutar al cargar la página
+    obtenerDatos();
+</script>
+
+</body>
+</html>
