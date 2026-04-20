@@ -19,12 +19,14 @@
             color: var(--pc-text);
             font-family: 'Verdana', sans-serif;
             margin: 0; padding: 20px;
-            display: flex; justify-content: center;
+            display: flex; 
+            flex-direction: column;
+            align-items: center;
         }
 
         .container { display: flex; gap: 20px; width: 1280px; max-width: 98vw; }
 
-        .fixtures-panel, .table-panel {
+        .fixtures-panel, .table-panel, .extra-container {
             background: linear-gradient(180deg, var(--pc-blue-mid), var(--pc-blue-dark));
             border: 2px solid var(--pc-blue-light);
             border-radius: 8px; padding: 15px;
@@ -33,6 +35,23 @@
 
         .fixtures-panel { flex: 1; min-width: 400px; }
         .table-panel { flex: 1.5; }
+
+        .extra-container {
+            margin-top: 20px;
+            width: 1280px;
+            max-width: 98vw;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+            box-sizing: border-box;
+        }
+
+        .extra-row {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
 
         h2 { 
             color: var(--pc-gold); 
@@ -46,7 +65,6 @@
             align-items: center;
         }
 
-        /* --- BOTONERA --- */
         .cloud-section {
             background: rgba(0,0,0,0.3);
             padding: 12px;
@@ -82,11 +100,12 @@
         .btn-load-cloud { background: #4527a0; border-color: #7c4dff; }
         .btn-copy-code { background: #2e7d32; border-color: #69f0ae; }
         .btn-import-code { background: #ef6c00; border-color: #ffd180; }
+        .btn-copy-text { background: var(--pc-gold); color: #000; border-color: #fff; min-width: 150px; }
+        .btn-paste-direct { background: #c62828; color: #fff; border-color: #ff8a80; min-width: 150px; }
         .btn-docs { background: #2b5797; grid-column: span 2; margin-top: 5px; color: var(--pc-gold); border-color: var(--pc-gold); }
 
         .btn-action:hover { opacity: 0.8; transform: scale(1.02); }
 
-        /* --- SELECTOR Y FILAS --- */
         .jornada-nav {
             display: flex;
             justify-content: space-between;
@@ -116,7 +135,6 @@
             border: 2px solid var(--pc-blue-light); border-radius: 4px;
         }
 
-        /* --- TABLA --- */
         table { width: 100%; border-collapse: collapse; }
         th { background: var(--pc-blue-dark); color: var(--pc-gold); padding: 12px 5px; font-size: 12px; }
         td { padding: 10px 5px; text-align: center; border-bottom: 1px solid rgba(90, 140, 184, 0.2); font-size: 14px; }
@@ -144,7 +162,7 @@
                 <button class="btn-action btn-copy-code" onclick="exportarCodigo()">
                     <i class="fas fa-copy"></i> COPIAR CÓDIGO
                 </button>
-                <button class="btn-action btn-import-code" onclick="importarCodigo()">
+                <button class="btn-action btn-import-code" onclick="importarCodigoPrompt()">
                     <i class="fas fa-paste"></i> PEGAR CÓDIGO
                 </button>
 
@@ -177,10 +195,30 @@
     </div>
 </div>
 
+<div class="extra-container">
+    <div class="extra-row">
+        <button class="btn-action btn-copy-text" onclick="copiarTextoSilencioso()">
+            <i class="fas fa-clipboard"></i> COPIAR TEXTO
+        </button>
+        <span id="textoEjemplo" style="font-weight: bold; color: var(--pc-gold); font-size: 14px;">
+
+
+
+W1t7ImhvbWUiOiJSLkJldGlzIiwiYXdheSI6IlZhbGVuY2lhIiwiZ0giOjUsImdBIjoxfSx7ImhvbWUiOiJWaWxsYXJyZWFsIiwiYXdheSI6IlNldmlsbGEiLCJnSCI6MSwiZ0EiOjF9LHsiaG9tZSI6IlIuTWFkcmlkIiwiYXdheSI6IkF0bOl0aWNvIiwiZ0giOjQsImdBIjoxfSx7ImhvbWUiOiJBdGhsZXRpYyIsImF3YXkiOiJCYXJjZWxvbmEiLCJnSCI6MSwiZ0EiOjF9XSxbeyJob21lIjoiVmlsbGFycmVhbCIsImF3YXkiOiJSLk1hZHJpZCIsImdIIjoyLCJnQSI6Mn0seyJob21lIjoiU2V2aWxsYSIsImF3YXkiOiJCYXJjZWxvbmEiLCJnSCI6MSwiZ0EiOjJ9LHsiaG9tZSI6IlZhbGVuY2lhIiwiYXdheSI6IkF0aGxldGljIiwiZ0giOjIsImdBIjowfSx7ImhvbWUiOiJBdGzpdGljbyIsImF3YXkiOiJSLkJldGlzIiwiZ0giOjEsImdBIjowfV0sW3siaG9tZSI6IkF0aGxldGljIiwiYXdheSI6IlNldmlsbGEiLCJnSCI6bnVsbCwiZ0EiOm51bGx9LHsiaG9tZSI6IlZhbGVuY2lhIiwiYXdheSI6IkF0bOl0aWNvIiwiZ0giOm51bGwsImdBIjpudWxsfSx7ImhvbWUiOiJSLk1hZHJpZCIsImF3YXkiOiJCYXJjZWxvbmEiLCJnSCI6bnVsbCwiZ0EiOm51bGx9LHsiaG9tZSI6IlIuQmV0aXMiLCJhd2F5IjoiVmlsbGFycmVhbCIsImdIIjpudWxsLCJnQSI6bnVsbH1dLFt7ImhvbWUiOiJBdGzpdGljbyIsImF3YXkiOiJBdGhsZXRpYyIsImdIIjpudWxsLCJnQSI6bnVsbH0seyJob21lIjoiQmFyY2Vsb25hIiwiYXdheSI6IlIuQmV0aXMiLCJnSCI6bnVsbCwiZ0EiOm51bGx9LHsiaG9tZSI6IlZpbGxhcnJlYWwiLCJhd2F5IjoiVmFsZW5jaWEiLCJnSCI6bnVsbCwiZ0EiOm51bGx9LHsiaG9tZSI6IlNldmlsbGEiLCJhd2F5IjoiUi5NYWRyaWQiLCJnSCI6bnVsbCwiZ0EiOm51bGx9XSxbeyJob21lIjoiVmFsZW5jaWEiLCJhd2F5IjoiQmFyY2Vsb25hIiwiZ0giOm51bGwsImdBIjpudWxsfSx7ImhvbWUiOiJSLkJldGlzIiwiYXdheSI6IlNldmlsbGEiLCJnSCI6bnVsbCwiZ0EiOm51bGx9LHsiaG9tZSI6IkF0bOl0aWNvIiwiYXdheSI6IlZpbGxhcnJlYWwiLCJnSCI6bnVsbCwiZ0EiOm51bGx9LHsiaG9tZSI6IlIuTWFkcmlkIiwiYXdheSI6IkF0aGxldGljIiwiZ0giOm51bGwsImdBIjpudWxsfV0sW3siaG9tZSI6IkJhcmNlbG9uYSIsImF3YXkiOiJBdGzpdGljbyIsImdIIjpudWxsLCJnQSI6bnVsbH0seyJob21lIjoiQXRobGV0aWMiLCJhd2F5IjoiVmlsbGFycmVhbCIsImdIIjpudWxsLCJnQSI6bnVsbH0seyJob21lIjoiUi5NYWRyaWQiLCJhd2F5IjoiUi5CZXRpcyIsImdIIjpudWxsLCJnQSI6bnVsbH0seyJob21lIjoiU2V2aWxsYSIsImF3YXkiOiJWYWxlbmNpYSIsImdIIjpudWxsLCJnQSI6bnVsbH1dLFt7ImhvbWUiOiJSLkJldGlzIiwiYXdheSI6IkF0aGxldGljIiwiZ0giOm51bGwsImdBIjpudWxsfSx7ImhvbWUiOiJWaWxsYXJyZWFsIiwiYXdheSI6IkJhcmNlbG9uYSIsImdIIjpudWxsLCJnQSI6bnVsbH0seyJob21lIjoiQXRs6XRpY28iLCJhd2F5IjoiU2V2aWxsYSIsImdIIjpudWxsLCJnQSI6bnVsbH0seyJob21lIjoiVmFsZW5jaWEiLCJhd2F5IjoiUi5NYWRyaWQiLCJnSCI6bnVsbCwiZ0EiOm51bGx9XSxbeyJob21lIjoiVmFsZW5jaWEiLCJhd2F5IjoiUi5CZXRpcyIsImdIIjpudWxsLCJnQSI6bnVsbH0seyJob21lIjoiU2V2aWxsYSIsImF3YXkiOiJWaWxsYXJyZWFsIiwiZ0giOm51bGwsImdBIjpudWxsfSx7ImhvbWUiOiJBdGzpdGljbyIsImF3YXkiOiJSLk1hZHJpZCIsImdIIjpudWxsLCJnQSI6bnVsbH0seyJob21lIjoiQmFyY2Vsb25hIiwiYXdheSI6IkF0aGxldGljIiwiZ0giOm51bGwsImdBIjpudWxsfV0sW3siaG9tZSI6IlIuTWFkcmlkIiwiYXdheSI6IlZpbGxhcnJlYWwiLCJnSCI6bnVsbCwiZ0EiOm51bGx9LHsiaG9tZSI6IkJhcmNlbG9uYSIsImF3YXkiOiJTZXZpbGxhIiwiZ0giOm51bGwsImdBIjpudWxsfSx7ImhvbWUiOiJBdGhsZXRpYyIsImF3YXkiOiJWYWxlbmNpYSIsImdIIjpudWxsLCJnQSI6bnVsbH0seyJob21lIjoiUi5CZXRpcyIsImF3YXkiOiJBdGzpdGljbyIsImdIIjpudWxsLCJnQSI6bnVsbH1dLFt7ImhvbWUiOiJTZXZpbGxhIiwiYXdheSI6IkF0aGxldGljIiwiZ0giOm51bGwsImdBIjpudWxsfSx7ImhvbWUiOiJBdGzpdGljbyIsImF3YXkiOiJWYWxlbmNpYSIsImdIIjpudWxsLCJnQSI6bnVsbH0seyJob21lIjoiQmFyY2Vsb25hIiwiYXdheSI6IlIuTWFkcmlkIiwiZ0giOm51bGwsImdBIjpudWxsfSx7ImhvbWUiOiJWaWxsYXJyZWFsIiwiYXdheSI6IlIuQmV0aXMiLCJnSCI6bnVsbCwiZ0EiOm51bGx9XSxbeyJob21lIjoiQXRobGV0aWMiLCJhd2F5IjoiQXRs6XRpY28iLCJnSCI6bnVsbCwiZ0EiOm51bGx9LHsiaG9tZSI6IlIuQmV0aXMiLCJhd2F5IjoiQmFyY2Vsb25hIiwiZ0giOm51bGwsImdBIjpudWxsfSx7ImhvbWUiOiJWYWxlbmNpYSIsImF3YXkiOiJWaWxsYXJyZWFsIiwiZ0giOm51bGwsImdBIjpudWxsfSx7ImhvbWUiOiJSLk1hZHJpZCIsImF3YXkiOiJTZXZpbGxhIiwiZ0giOm51bGwsImdBIjpudWxsfV0sW3siaG9tZSI6IkJhcmNlbG9uYSIsImF3YXkiOiJWYWxlbmNpYSIsImdIIjpudWxsLCJnQSI6bnVsbH0seyJob21lIjoiU2V2aWxsYSIsImF3YXkiOiJSLkJldGlzIiwiZ0giOm51bGwsImdBIjpudWxsfSx7ImhvbWUiOiJWaWxsYXJyZWFsIiwiYXdheSI6IkF0bOl0aWNvIiwiZ0giOm51bGwsImdBIjpudWxsfSx7ImhvbWUiOiJBdGhsZXRpYyIsImF3YXkiOiJSLk1hZHJpZCIsImdIIjpudWxsLCJnQSI6bnVsbH1dLFt7ImhvbWUiOiJBdGzpdGljbyIsImF3YXkiOiJCYXJjZWxvbmEiLCJnSCI6bnVsbCwiZ0EiOm51bGx9LHsiaG9tZSI6IlZpbGxhcnJlYWwiLCJhd2F5IjoiQXRobGV0aWMiLCJnSCI6bnVsbCwiZ0EiOm51bGx9LHsiaG9tZSI6IlIuQmV0aXMiLCJhd2F5IjoiUi5NYWRyaWQiLCJnSCI6bnVsbCwiZ0EiOm51bGx9LHsiaG9tZSI6IlZhbGVuY2lhIiwiYXdheSI6IlNldmlsbGEiLCJnSCI6bnVsbCwiZ0EiOm51bGx9XSxbeyJob21lIjoiQXRobGV0aWMiLCJhd2F5IjoiUi5CZXRpcyIsImdIIjpudWxsLCJnQSI6bnVsbH0seyJob21lIjoiQmFyY2Vsb25hIiwiYXdheSI6IlZpbGxhcnJlYWwiLCJnSCI6bnVsbCwiZ0EiOm51bGx9LHsiaG9tZSI6IlNldmlsbGEiLCJhd2F5IjoiQXRs6XRpY28iLCJnSCI6bnVsbCwiZ0EiOm51bGx9LHsiaG9tZSI6IlIuTWFkcmlkIiwiYXdheSI6IlZhbGVuY2lhIiwiZ0giOm51bGwsImdBIjpudWxsfV1d
+
+
+
+</span>
+    </div>
+    
+    <div class="extra-row">
+        <button class="btn-action btn-paste-direct" onclick="pegarCodigoDirecto()">
+            <i class="fas fa-file-import"></i> PEGAR CÓDIGO DIRECTO
+        </button>
+    </div>
+</div>
+
 <script>
-    // ==========================================
-    // CONFIGURACIÓN: PEGA AQUÍ TUS DATOS DE JSONBIN
-    // ==========================================
     const CLOUD_CONFIG = {
         masterKey: '$2a$10$26PEKgZLn/Xrvj382g.aLuqVvown/bA8vqbabwSAPpPYLnPZx/oku', 
         binId: '69aca9aeae596e708f6ac02c' 
@@ -188,7 +226,6 @@
 
     const equiposArr = ["Valencia", "Atlético", "Barcelona", "R.Betis", "R.Madrid", "Villarreal", "Sevilla", "Athletic"];
     
-    // Estructura de calendario basada en tus imágenes
     let leagueData = { 
         matches: [
             [["R.Betis","Valencia"], ["Villarreal","Sevilla"], ["R.Madrid","Atlético"], ["Athletic","Barcelona"]], 
@@ -209,7 +246,40 @@
         teams: {}
     };
 
-    // --- FUNCIONES NUBE DIRECTA ---
+    // COPIAR SIN POPUP
+    function copiarTextoSilencioso() {
+        const texto = document.getElementById('textoEjemplo').innerText;
+        navigator.clipboard.writeText(texto);
+    }
+
+    // PEGAR DIRECTO DESDE MEMORIA SIN POPUP
+    async function pegarCodigoDirecto() {
+        try {
+            const texto = await navigator.clipboard.readText();
+            if (texto) {
+                cargarPartida(texto);
+            }
+        } catch (err) {
+            console.error("Error al acceder al portapapeles: ", err);
+        }
+    }
+
+    function cargarPartida(codigo) {
+        try {
+            leagueData.matches = JSON.parse(atob(codigo));
+            saveLocal(); 
+            calculateTable(); 
+            renderMatches();
+            document.getElementById('sync-label').innerText = "Cargado desde memoria";
+        } catch (e) {
+            alert("El contenido de la memoria no es un código de partida válido.");
+        }
+    }
+
+    function importarCodigoPrompt() {
+        const codigo = prompt("Pega el código de backup aquí:");
+        if (codigo) cargarPartida(codigo);
+    }
 
     async function saveToCloud() {
         const label = document.getElementById('sync-label');
@@ -220,8 +290,8 @@
                 headers: { 'Content-Type': 'application/json', 'X-Master-Key': CLOUD_CONFIG.masterKey },
                 body: JSON.stringify(leagueData.matches)
             });
-            if(res.ok) { alert("¡Nube actualizada!"); label.innerText = "Sincronizado"; }
-        } catch (e) { alert("Error al conectar con el servidor"); label.innerText = "Error"; }
+            if(res.ok) { label.innerText = "Sincronizado"; }
+        } catch (e) { label.innerText = "Error"; }
     }
 
     async function loadFromCloud() {
@@ -237,30 +307,14 @@
                 calculateTable(); renderMatches();
                 label.innerText = "Datos recuperados";
             }
-        } catch (e) { alert("Error al descargar datos"); }
+        } catch (e) { label.innerText = "Error"; }
     }
-
-    // --- FUNCIONES DE CÓDIGO (BACKUP MANUAL) ---
 
     function exportarCodigo() {
         const codigo = btoa(JSON.stringify(leagueData.matches));
-        navigator.clipboard.writeText(codigo).then(() => {
-            alert("Código de backup copiado al portapapeles. Puedes guardarlo en tu Google Doc.");
-        });
+        navigator.clipboard.writeText(codigo);
+        alert("Código de partida copiado al portapapeles.");
     }
-
-    function importarCodigo() {
-        const codigo = prompt("Pega el código de backup aquí:");
-        if (codigo) {
-            try {
-                leagueData.matches = JSON.parse(atob(codigo));
-                saveLocal(); calculateTable(); renderMatches();
-                alert("Partida cargada desde código.");
-            } catch (e) { alert("Código inválido."); }
-        }
-    }
-
-    // --- MOTOR DE LIGA ---
 
     function saveLocal() {
         localStorage.setItem('pcfutbol_final_save', JSON.stringify(leagueData.matches));
@@ -305,30 +359,19 @@
         });
     }
 
-function renderTable() {
+    function renderTable() {
         const tbody = document.getElementById('leagueTable');
         const sorted = Object.keys(leagueData.teams).sort((a,b) => {
             const tA = leagueData.teams[a], tB = leagueData.teams[b];
-            
-            // 1. Puntos (de mayor a menor)
             if (tB.pts !== tA.pts) return tB.pts - tA.pts;
-            
-            // 2. Diferencia de goles (DG)
             const diffA = tA.gf - tA.gc;
             const diffB = tB.gf - tB.gc;
             if (diffB !== diffA) return diffB - diffA;
-            
-            // 3. Goles a favor (GF)
             if (tB.gf !== tA.gf) return tB.gf - tA.gf;
-            
-            // 4. Partidos ganados (PG)
             return tB.pg - tA.pg;
         });
         
         tbody.innerHTML = '';
-        // ... (el resto del código de la función se queda igual)
-
-
         sorted.forEach((id, i) => {
             const t = leagueData.teams[id];
             tbody.innerHTML += `<tr class="${i===0?'pos-1':''}">
