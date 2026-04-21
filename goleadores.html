@@ -28,7 +28,7 @@
             background: rgba(10, 17, 25, 0.8);
             border: 1px solid rgba(0, 242, 255, 0.3);
             border-radius: 4px;
-            width: 900px;
+            width: 1000px; /* Un poco más ancho para la foto */
             box-shadow: 0 0 50px rgba(0,0,0,0.8);
             backdrop-filter: blur(10px);
             position: relative;
@@ -81,16 +81,21 @@
             background: rgba(0, 242, 255, 0.1);
         }
 
-        .stats-table th i {
-            margin-left: 8px;
-            font-size: 10px;
-            opacity: 0.5;
-        }
-
         .stats-table td {
-            padding: 15px;
+            padding: 10px 15px;
             border-bottom: 1px solid rgba(255,255,255,0.03);
             font-size: 15px;
+            vertical-align: middle;
+        }
+
+        .player-photo {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--fifa-blue-mid);
+            border: 1px solid var(--fifa-accent);
+            object-fit: cover;
+            display: block;
         }
 
         .stats-table tr:hover {
@@ -117,7 +122,7 @@
         }
 
         .rank {
-            width: 50px;
+            width: 40px;
             text-align: center;
             color: rgba(255,255,255,0.3);
             font-style: italic;
@@ -141,41 +146,42 @@
         <thead>
             <tr>
                 <th onclick="sortTable(0)">#</th>
+                <th>Foto</th>
                 <th onclick="sortTable(1)">Nombre del Jugador <i class="fas fa-sort"></i></th>
                 <th onclick="sortTable(2)">Equipo <i class="fas fa-sort"></i></th>
                 <th onclick="sortTable(3)" style="text-align: center;">Goles <i class="fas fa-sort"></i></th>
             </tr>
         </thead>
         <tbody id="pichichiBody">
-            </tbody>
+        </tbody>
     </table>
 </div>
 
 <script>
     const players = [
-        { name: "Antony", team: "Real Betis", goals: 2 },
-        { name: "Lo Celso", team: "Real Betis", goals: 1 },
-        { name: "Isco", team: "Real Betis", goals: 1 },
-        { name: "Cucho", team: "Real Betis", goals: 1 },
-        { name: "Rüdiger", team: "Real Madrid", goals: 1 },
-        { name: "Bellingham", team: "Real Madrid", goals: 1 },
-        { name: "Valverde", team: "Real Madrid", goals: 1 },
-        { name: "Mbappé", team: "Real Madrid", goals: 2 },
-        { name: "Vini Jr.", team: "Real Madrid", goals: 1 },
-        { name: "Lewandowski", team: "FC Barcelona", goals: 1 },
-        { name: "Koundé", team: "FC Barcelona", goals: 2 },
-        { name: "Griezmann", team: "Atlético de Madrid", goals: 2 },
-        { name: "Iñaki Williams", team: "Athletic Club", goals: 1 },
-        { name: "Sergi Cardona", team: "Villarreal CF", goals: 1 },
-        { name: "Parejo", team: "Villarreal CF", goals: 1 },
-        { name: "Foyth", team: "Villarreal CF", goals: 1 },
-        { name: "Javi Guerra", team: "Valencia CF", goals: 2 },
-        { name: "Diego López", team: "Valencia CF", goals: 1 },
-        { name: "Ejuke", team: "Sevilla FC", goals: 1 },
-        { name: "Joan Jordán", team: "Sevilla FC", goals: 1 }
+        { id: "255475", name: "Antony", team: "Real Betis", goals: 2 },
+        { id: "226226", name: "Lo Celso", team: "Real Betis", goals: 1 },
+        { id: "197781", name: "Isco", team: "Real Betis", goals: 1 },
+        { id: "237034", name: "Cucho", team: "Real Betis", goals: 1 },
+        { id: "205452", name: "Rüdiger", team: "Real Madrid", goals: 1 },
+        { id: "111111", name: "Bellingham", team: "Real Madrid", goals: 1 },
+        { id: "239053", name: "Valverde", team: "Real Madrid", goals: 1 },
+        { id: "231747", name: "Mbappé", team: "Real Madrid", goals: 2 },
+        { id: "238794", name: "Vini Jr.", team: "Real Madrid", goals: 1 },
+        { id: "188545", name: "Lewandowski", team: "FC Barcelona", goals: 1 },
+        { id: "241486", name: "Koundé", team: "FC Barcelona", goals: 2 },
+        { id: "194765", name: "Griezmann", team: "Atlético de Madrid", goals: 2 },
+        { id: "216201", name: "Iñaki Williams", team: "Athletic Club", goals: 1 },
+        { id: "243952", name: "Sergi Cardona", team: "Villarreal CF", goals: 1 },
+        { id: "189513", name: "Parejo", team: "Villarreal CF", goals: 1 },
+        { id: "237221", name: "Foyth", team: "Villarreal CF", goals: 1 },
+        { id: "266436", name: "Javi Guerra", team: "Valencia CF", goals: 2 },
+        { id: "264238", name: "Diego López", team: "Valencia CF", goals: 1 },
+        { id: "238050", name: "Ejuke", team: "Sevilla FC", goals: 1 },
+        { id: "224309", name: "Joan Jordán", team: "Sevilla FC", goals: 1 }
     ];
 
-    let currentSort = { column: 3, asc: false }; // Orden inicial por goles de mayor a menor
+    let currentSort = { column: 3, asc: false };
 
     function renderTable() {
         const body = document.getElementById('pichichiBody');
@@ -185,6 +191,7 @@
             const row = `
                 <tr>
                     <td class="rank">${index + 1}</td>
+                    <td><img src="fotos/p${player.id}.png" class="player-photo" alt="${player.name}" onerror="this.src='https://www.fifacm.com/content/images/player-placeholder.png'"></td>
                     <td class="player-name">${player.name}</td>
                     <td class="team-tag">${player.team}</td>
                     <td class="goals-cell">${player.goals}</td>
@@ -204,26 +211,21 @@
 
         players.sort((a, b) => {
             let valA, valB;
-
             switch(columnIndex) {
-                case 0: return 0; // Rank se mantiene por el orden del array
                 case 1: valA = a.name; valB = b.name; break;
                 case 2: valA = a.team; valB = b.team; break;
                 case 3: valA = a.goals; valB = b.goals; break;
+                default: return 0;
             }
-
             if (valA < valB) return currentSort.asc ? -1 : 1;
             if (valA > valB) return currentSort.asc ? 1 : -1;
             return 0;
         });
-
         renderTable();
     }
 
-    // Inicializar por goles al cargar
     players.sort((a, b) => b.goals - a.goals);
     renderTable();
 </script>
-
 </body>
 </html>
