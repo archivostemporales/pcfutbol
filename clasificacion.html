@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
-<head>
+<html lang="es"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta charset="UTF-8">
     <title>CLASIFICACIÓN</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="CLASIFICACI%C3%93N_files/all.min.css" rel="stylesheet">
     <style>
         :root {
             --pc-blue-dark: #001a33;
@@ -142,8 +142,59 @@
         .pts-col { color: var(--pc-gold); font-weight: bold; font-size: 16px; }
 
         #sync-label { font-size: 10px; text-transform: none; font-weight: normal; color: var(--pc-cyan); }
+
+
+/* Estilos para el Popup de Goleadores */
+.modal-overlay {
+    display: none; /* Oculto por defecto */
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(5px);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    width: 950px;
+    height: 80vh;
+    background: var(--pc-blue-dark);
+    border: 3px solid var(--pc-gold);
+    border-radius: 12px;
+    position: relative;
+    box-shadow: 0 0 30px var(--pc-cyan);
+    overflow: hidden;
+}
+
+.close-modal {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 30px;
+    color: var(--pc-gold);
+    cursor: pointer;
+    z-index: 1001;
+    transition: 0.3s;
+}
+
+.close-modal:hover { transform: scale(1.2); color: #fff; }
+
+iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* Color específico para el nuevo botón */
+.btn-goleadores { background: #6a1b9a; border-color: #e1bee7; }
+
+
     </style>
 </head>
+
+
+
 <body>
 
 <div class="container">
@@ -151,6 +202,7 @@
         <h2>CENTRAL DE DATOS <span id="sync-label">Listo</span></h2>
         
         <div class="cloud-section">
+
             <div class="btn-grid">
                 <button class="btn-action btn-save-cloud" onclick="saveToCloud()">
                     <i class="fas fa-cloud-upload-alt"></i> GUARDAR NUBE
@@ -165,20 +217,48 @@
                 <button class="btn-action btn-import-code" onclick="importarCodigoPrompt()">
                     <i class="fas fa-paste"></i> PEGAR CÓDIGO
                 </button>
-
-                <a href="https://docs.google.com/document/d/1LuO4fxi0QphqnF06ka_F9b65K0jcuyK5/edit" 
-                   target="_blank" class="btn-action btn-docs">
+                <a href="https://docs.google.com/document/d/1LuO4fxi0QphqnF06ka_F9b65K0jcuyK5/edit" target="_blank" class="btn-action btn-docs">
                     <i class="fas fa-external-link-alt"></i> ABRIR HISTORIAL (GOOGLE DOCS)
                 </a>
+
+
             </div>
         </div>
 
         <div class="jornada-nav">
-            <span>Jornada: <select id="jornadaSelect" onchange="renderMatches()"></select></span>
+            <span>Jornada: <select id="jornadaSelect" onchange="renderMatches()"><option value="1" selected="selected">Jornada 1</option><option value="2">Jornada 2</option><option value="3">Jornada 3</option><option value="4">Jornada 4</option><option value="5">Jornada 5</option><option value="6">Jornada 6</option><option value="7">Jornada 7</option><option value="8">Jornada 8</option><option value="9">Jornada 9</option><option value="10">Jornada 10</option><option value="11">Jornada 11</option><option value="12">Jornada 12</option><option value="13">Jornada 13</option><option value="14">Jornada 14</option></select></span>
             <button onclick="resetLiga()" style="background:none; border:none; color:#ff4444; cursor:pointer; font-size:10px;">BORRAR TODO</button>
         </div>
         
-        <div id="matchesContainer"></div>
+        <div id="matchesContainer">
+                <div class="match-row completed">
+                    <span style="width:80px; text-align:right; font-weight:bold">R.Betis</span>
+                    <input type="number" class="score-input" value="5" onchange="updateScore(0,0,'H',this.value)">
+                    <span style="color:var(--pc-gold); font-weight:bold">vs</span>
+                    <input type="number" class="score-input" value="1" onchange="updateScore(0,0,'A',this.value)">
+                    <span style="width:80px; text-align:left; font-weight:bold">Valencia</span>
+                </div>
+                <div class="match-row completed">
+                    <span style="width:80px; text-align:right; font-weight:bold">Villarreal</span>
+                    <input type="number" class="score-input" value="1" onchange="updateScore(0,1,'H',this.value)">
+                    <span style="color:var(--pc-gold); font-weight:bold">vs</span>
+                    <input type="number" class="score-input" value="1" onchange="updateScore(0,1,'A',this.value)">
+                    <span style="width:80px; text-align:left; font-weight:bold">Sevilla</span>
+                </div>
+                <div class="match-row completed">
+                    <span style="width:80px; text-align:right; font-weight:bold">R.Madrid</span>
+                    <input type="number" class="score-input" value="4" onchange="updateScore(0,2,'H',this.value)">
+                    <span style="color:var(--pc-gold); font-weight:bold">vs</span>
+                    <input type="number" class="score-input" value="1" onchange="updateScore(0,2,'A',this.value)">
+                    <span style="width:80px; text-align:left; font-weight:bold">Atlético</span>
+                </div>
+                <div class="match-row completed">
+                    <span style="width:80px; text-align:right; font-weight:bold">Athletic</span>
+                    <input type="number" class="score-input" value="1" onchange="updateScore(0,3,'H',this.value)">
+                    <span style="color:var(--pc-gold); font-weight:bold">vs</span>
+                    <input type="number" class="score-input" value="1" onchange="updateScore(0,3,'A',this.value)">
+                    <span style="width:80px; text-align:left; font-weight:bold">Barcelona</span>
+                </div></div>
     </div>
 
     <div class="table-panel">
@@ -190,7 +270,39 @@
                     <th>PJ</th><th>PG</th><th>PE</th><th>PP</th><th>GF</th><th>GC</th><th>DG</th><th>PTS</th>
                 </tr>
             </thead>
-            <tbody id="leagueTable"></tbody>
+            <tbody id="leagueTable"><tr class="pos-1">
+                <td>1</td><td style="text-align:left; padding-left:10px">R.Madrid</td>
+                <td>2</td><td>1</td><td>1</td><td>0</td>
+                <td>6</td><td>3</td><td>3</td><td class="pts-col">4</td>
+            </tr><tr class="">
+                <td>2</td><td style="text-align:left; padding-left:10px">Barcelona</td>
+                <td>2</td><td>1</td><td>1</td><td>0</td>
+                <td>3</td><td>2</td><td>1</td><td class="pts-col">4</td>
+            </tr><tr class="">
+                <td>3</td><td style="text-align:left; padding-left:10px">R.Betis</td>
+                <td>2</td><td>1</td><td>0</td><td>1</td>
+                <td>5</td><td>2</td><td>3</td><td class="pts-col">3</td>
+            </tr><tr class="">
+                <td>4</td><td style="text-align:left; padding-left:10px">Valencia</td>
+                <td>2</td><td>1</td><td>0</td><td>1</td>
+                <td>3</td><td>5</td><td>-2</td><td class="pts-col">3</td>
+            </tr><tr class="">
+                <td>5</td><td style="text-align:left; padding-left:10px">Atlético</td>
+                <td>2</td><td>1</td><td>0</td><td>1</td>
+                <td>2</td><td>4</td><td>-2</td><td class="pts-col">3</td>
+            </tr><tr class="">
+                <td>6</td><td style="text-align:left; padding-left:10px">Villarreal</td>
+                <td>2</td><td>0</td><td>2</td><td>0</td>
+                <td>3</td><td>3</td><td>0</td><td class="pts-col">2</td>
+            </tr><tr class="">
+                <td>7</td><td style="text-align:left; padding-left:10px">Sevilla</td>
+                <td>2</td><td>0</td><td>1</td><td>1</td>
+                <td>2</td><td>3</td><td>-1</td><td class="pts-col">1</td>
+            </tr><tr class="">
+                <td>8</td><td style="text-align:left; padding-left:10px">Athletic</td>
+                <td>2</td><td>0</td><td>1</td><td>1</td>
+                <td>1</td><td>3</td><td>-2</td><td class="pts-col">1</td>
+            </tr></tbody>
         </table>
     </div>
 </div>
@@ -208,6 +320,7 @@
 
 W1t7ImhvbWUiOiJSLkJldGlzIiwiYXdheSI6IlZhbGVuY2lhIiwiZ0giOjUsImdBIjoxfSx7ImhvbWUiOiJWaWxsYXJyZWFsIiwiYXdheSI6IlNldmlsbGEiLCJnSCI6MSwiZ0EiOjF9LHsiaG9tZSI6IlIuTWFkcmlkIiwiYXdheSI6IkF0bOl0aWNvIiwiZ0giOjQsImdBIjoxfSx7ImhvbWUiOiJBdGhsZXRpYyIsImF3YXkiOiJCYXJjZWxvbmEiLCJnSCI6MSwiZ0EiOjF9XSxbeyJob21lIjoiVmlsbGFycmVhbCIsImF3YXkiOiJSLk1hZHJpZCIsImdIIjoyLCJnQSI6Mn0seyJob21lIjoiU2V2aWxsYSIsImF3YXkiOiJCYXJjZWxvbmEiLCJnSCI6MSwiZ0EiOjJ9LHsiaG9tZSI6IlZhbGVuY2lhIiwiYXdheSI6IkF0aGxldGljIiwiZ0giOjIsImdBIjowfSx7ImhvbWUiOiJBdGzpdGljbyIsImF3YXkiOiJSLkJldGlzIiwiZ0giOjEsImdBIjowfV0sW3siaG9tZSI6IkF0aGxldGljIiwiYXdheSI6IlNldmlsbGEiLCJnSCI6bnVsbCwiZ0EiOm51bGx9LHsiaG9tZSI6IlZhbGVuY2lhIiwiYXdheSI6IkF0bOl0aWNvIiwiZ0giOm51bGwsImdBIjpudWxsfSx7ImhvbWUiOiJSLk1hZHJpZCIsImF3YXkiOiJCYXJjZWxvbmEiLCJnSCI6bnVsbCwiZ0EiOm51bGx9LHsiaG9tZSI6IlIuQmV0aXMiLCJhd2F5IjoiVmlsbGFycmVhbCIsImdIIjpudWxsLCJnQSI6bnVsbH1dLFt7ImhvbWUiOiJBdGzpdGljbyIsImF3YXkiOiJBdGhsZXRpYyIsImdIIjpudWxsLCJnQSI6bnVsbH0seyJob21lIjoiQmFyY2Vsb25hIiwiYXdheSI6IlIuQmV0aXMiLCJnSCI6bnVsbCwiZ0EiOm51bGx9LHsiaG9tZSI6IlZpbGxhcnJlYWwiLCJhd2F5IjoiVmFsZW5jaWEiLCJnSCI6bnVsbCwiZ0EiOm51bGx9LHsiaG9tZSI6IlNldmlsbGEiLCJhd2F5IjoiUi5NYWRyaWQiLCJnSCI6bnVsbCwiZ0EiOm51bGx9XSxbeyJob21lIjoiVmFsZW5jaWEiLCJhd2F5IjoiQmFyY2Vsb25hIiwiZ0giOm51bGwsImdBIjpudWxsfSx7ImhvbWUiOiJSLkJldGlzIiwiYXdheSI6IlNldmlsbGEiLCJnSCI6bnVsbCwiZ0EiOm51bGx9LHsiaG9tZSI6IkF0bOl0aWNvIiwiYXdheSI6IlZpbGxhcnJlYWwiLCJnSCI6bnVsbCwiZ0EiOm51bGx9LHsiaG9tZSI6IlIuTWFkcmlkIiwiYXdheSI6IkF0aGxldGljIiwiZ0giOm51bGwsImdBIjpudWxsfV0sW3siaG9tZSI6IkJhcmNlbG9uYSIsImF3YXkiOiJBdGzpdGljbyIsImdIIjpudWxsLCJnQSI6bnVsbH0seyJob21lIjoiQXRobGV0aWMiLCJhd2F5IjoiVmlsbGFycmVhbCIsImdIIjpudWxsLCJnQSI6bnVsbH0seyJob21lIjoiUi5NYWRyaWQiLCJhd2F5IjoiUi5CZXRpcyIsImdIIjpudWxsLCJnQSI6bnVsbH0seyJob21lIjoiU2V2aWxsYSIsImF3YXkiOiJWYWxlbmNpYSIsImdIIjpudWxsLCJnQSI6bnVsbH1dLFt7ImhvbWUiOiJSLkJldGlzIiwiYXdheSI6IkF0aGxldGljIiwiZ0giOm51bGwsImdBIjpudWxsfSx7ImhvbWUiOiJWaWxsYXJyZWFsIiwiYXdheSI6IkJhcmNlbG9uYSIsImdIIjpudWxsLCJnQSI6bnVsbH0seyJob21lIjoiQXRs6XRpY28iLCJhd2F5IjoiU2V2aWxsYSIsImdIIjpudWxsLCJnQSI6bnVsbH0seyJob21lIjoiVmFsZW5jaWEiLCJhd2F5IjoiUi5NYWRyaWQiLCJnSCI6bnVsbCwiZ0EiOm51bGx9XSxbeyJob21lIjoiVmFsZW5jaWEiLCJhd2F5IjoiUi5CZXRpcyIsImdIIjpudWxsLCJnQSI6bnVsbH0seyJob21lIjoiU2V2aWxsYSIsImF3YXkiOiJWaWxsYXJyZWFsIiwiZ0giOm51bGwsImdBIjpudWxsfSx7ImhvbWUiOiJBdGzpdGljbyIsImF3YXkiOiJSLk1hZHJpZCIsImdIIjpudWxsLCJnQSI6bnVsbH0seyJob21lIjoiQmFyY2Vsb25hIiwiYXdheSI6IkF0aGxldGljIiwiZ0giOm51bGwsImdBIjpudWxsfV0sW3siaG9tZSI6IlIuTWFkcmlkIiwiYXdheSI6IlZpbGxhcnJlYWwiLCJnSCI6bnVsbCwiZ0EiOm51bGx9LHsiaG9tZSI6IkJhcmNlbG9uYSIsImF3YXkiOiJTZXZpbGxhIiwiZ0giOm51bGwsImdBIjpudWxsfSx7ImhvbWUiOiJBdGhsZXRpYyIsImF3YXkiOiJWYWxlbmNpYSIsImdIIjpudWxsLCJnQSI6bnVsbH0seyJob21lIjoiUi5CZXRpcyIsImF3YXkiOiJBdGzpdGljbyIsImdIIjpudWxsLCJnQSI6bnVsbH1dLFt7ImhvbWUiOiJTZXZpbGxhIiwiYXdheSI6IkF0aGxldGljIiwiZ0giOm51bGwsImdBIjpudWxsfSx7ImhvbWUiOiJBdGzpdGljbyIsImF3YXkiOiJWYWxlbmNpYSIsImdIIjpudWxsLCJnQSI6bnVsbH0seyJob21lIjoiQmFyY2Vsb25hIiwiYXdheSI6IlIuTWFkcmlkIiwiZ0giOm51bGwsImdBIjpudWxsfSx7ImhvbWUiOiJWaWxsYXJyZWFsIiwiYXdheSI6IlIuQmV0aXMiLCJnSCI6bnVsbCwiZ0EiOm51bGx9XSxbeyJob21lIjoiQXRobGV0aWMiLCJhd2F5IjoiQXRs6XRpY28iLCJnSCI6bnVsbCwiZ0EiOm51bGx9LHsiaG9tZSI6IlIuQmV0aXMiLCJhd2F5IjoiQmFyY2Vsb25hIiwiZ0giOm51bGwsImdBIjpudWxsfSx7ImhvbWUiOiJWYWxlbmNpYSIsImF3YXkiOiJWaWxsYXJyZWFsIiwiZ0giOm51bGwsImdBIjpudWxsfSx7ImhvbWUiOiJSLk1hZHJpZCIsImF3YXkiOiJTZXZpbGxhIiwiZ0giOm51bGwsImdBIjpudWxsfV0sW3siaG9tZSI6IkJhcmNlbG9uYSIsImF3YXkiOiJWYWxlbmNpYSIsImdIIjpudWxsLCJnQSI6bnVsbH0seyJob21lIjoiU2V2aWxsYSIsImF3YXkiOiJSLkJldGlzIiwiZ0giOm51bGwsImdBIjpudWxsfSx7ImhvbWUiOiJWaWxsYXJyZWFsIiwiYXdheSI6IkF0bOl0aWNvIiwiZ0giOm51bGwsImdBIjpudWxsfSx7ImhvbWUiOiJBdGhsZXRpYyIsImF3YXkiOiJSLk1hZHJpZCIsImdIIjpudWxsLCJnQSI6bnVsbH1dLFt7ImhvbWUiOiJBdGzpdGljbyIsImF3YXkiOiJCYXJjZWxvbmEiLCJnSCI6bnVsbCwiZ0EiOm51bGx9LHsiaG9tZSI6IlZpbGxhcnJlYWwiLCJhd2F5IjoiQXRobGV0aWMiLCJnSCI6bnVsbCwiZ0EiOm51bGx9LHsiaG9tZSI6IlIuQmV0aXMiLCJhd2F5IjoiUi5NYWRyaWQiLCJnSCI6bnVsbCwiZ0EiOm51bGx9LHsiaG9tZSI6IlZhbGVuY2lhIiwiYXdheSI6IlNldmlsbGEiLCJnSCI6bnVsbCwiZ0EiOm51bGx9XSxbeyJob21lIjoiQXRobGV0aWMiLCJhd2F5IjoiUi5CZXRpcyIsImdIIjpudWxsLCJnQSI6bnVsbH0seyJob21lIjoiQmFyY2Vsb25hIiwiYXdheSI6IlZpbGxhcnJlYWwiLCJnSCI6bnVsbCwiZ0EiOm51bGx9LHsiaG9tZSI6IlNldmlsbGEiLCJhd2F5IjoiQXRs6XRpY28iLCJnSCI6bnVsbCwiZ0EiOm51bGx9LHsiaG9tZSI6IlIuTWFkcmlkIiwiYXdheSI6IlZhbGVuY2lhIiwiZ0giOm51bGwsImdBIjpudWxsfV1d
 
+
 <!-- ************************************************************************************************************************************************* -->
 
 </span>
@@ -218,6 +331,12 @@ W1t7ImhvbWUiOiJSLkJldGlzIiwiYXdheSI6IlZhbGVuY2lhIiwiZ0giOjUsImdBIjoxfSx7ImhvbWUi
             <i class="fas fa-file-import"></i> CARGAR PARTIDA
         </button>
     </div>
+
+<button class="btn-action btn-goleadores" onclick="openGoleadores()">
+    <i class="fas fa-futbol"></i> GOLEADORES
+</button>
+
+
 </div>
 
 <script>
@@ -396,5 +515,29 @@ W1t7ImhvbWUiOiJSLkJldGlzIiwiYXdheSI6IlZhbGVuY2lhIiwiZ0giOjUsImdBIjoxfSx7ImhvbWUi
         calculateTable(); renderMatches();
     };
 </script>
-</body>
-</html>
+<div id="goleadoresModal" class="modal-overlay">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeGoleadores()">&times;</span>
+        <iframe src="goleadores.html"></iframe>
+    </div>
+</div>
+
+<script>
+    // Funciones para controlar el popup
+    function openGoleadores() {
+        document.getElementById('goleadoresModal').style.display = 'flex';
+    }
+
+    function closeGoleadores() {
+        document.getElementById('goleadoresModal').style.display = 'none';
+    }
+
+    // Cerrar también si se pulsa fuera del recuadro
+    window.onclick = function(event) {
+        let modal = document.getElementById('goleadoresModal');
+        if (event.target == modal) {
+            closeGoleadores();
+        }
+    }
+</script>
+</body></html>

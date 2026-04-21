@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>PICHICHI - LIGA 2026</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --fifa-blue-dark: #0a1119;
+            --fifa-blue-mid: #162636;
+            --fifa-blue-light: #243b55;
+            --fifa-accent: #00f2ff;
+            --fifa-gold: #ffd700;
+            --fifa-text: #ffffff;
+        }
+
+        body {
+            background: radial-gradient(circle at center, var(--fifa-blue-light) 0%, var(--fifa-blue-dark) 100%);
+            color: var(--fifa-text);
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 40px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .main-card {
+            background: rgba(10, 17, 25, 0.8);
+            border: 1px solid rgba(0, 242, 255, 0.3);
+            border-radius: 4px;
+            width: 900px;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .main-card::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 4px;
+            background: linear-gradient(90deg, transparent, var(--fifa-accent), transparent);
+        }
+
+        .header {
+            padding: 25px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 24px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--fifa-gold);
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
+        }
+
+        .stats-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .stats-table th {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            text-align: left;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: 0.3s;
+            color: var(--fifa-accent);
+            border-bottom: 2px solid var(--fifa-blue-mid);
+        }
+
+        .stats-table th:hover {
+            background: rgba(0, 242, 255, 0.1);
+        }
+
+        .stats-table th i {
+            margin-left: 8px;
+            font-size: 10px;
+            opacity: 0.5;
+        }
+
+        .stats-table td {
+            padding: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+            font-size: 15px;
+        }
+
+        .stats-table tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .player-name {
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .team-tag {
+            font-size: 13px;
+            opacity: 0.8;
+            color: #bdc3c7;
+        }
+
+        .goals-cell {
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            font-size: 18px;
+            color: var(--fifa-gold);
+            text-align: center;
+        }
+
+        .rank {
+            width: 50px;
+            text-align: center;
+            color: rgba(255,255,255,0.3);
+            font-style: italic;
+        }
+
+        /* Top 3 Styling */
+        tr:nth-child(1) .rank { color: var(--fifa-gold); font-size: 18px; opacity: 1; }
+        tr:nth-child(2) .rank { color: #C0C0C0; opacity: 1; }
+        tr:nth-child(3) .rank { color: #CD7F32; opacity: 1; }
+    </style>
+</head>
+<body>
+
+<div class="main-card">
+    <div class="header">
+        <h1><i class="fas fa-trophy"></i> Máximos Goleadores</h1>
+        <span style="font-size: 12px; opacity: 0.6;">TEMPORADA 2026</span>
+    </div>
+
+    <table class="stats-table" id="pichichiTable">
+        <thead>
+            <tr>
+                <th onclick="sortTable(0)">#</th>
+                <th onclick="sortTable(1)">Nombre del Jugador <i class="fas fa-sort"></i></th>
+                <th onclick="sortTable(2)">Equipo <i class="fas fa-sort"></i></th>
+                <th onclick="sortTable(3)" style="text-align: center;">Goles <i class="fas fa-sort"></i></th>
+            </tr>
+        </thead>
+        <tbody id="pichichiBody">
+            </tbody>
+    </table>
+</div>
+
+<script>
+    const players = [
+        { name: "Antony", team: "Real Betis", goals: 2 },
+        { name: "Lo Celso", team: "Real Betis", goals: 1 },
+        { name: "Isco", team: "Real Betis", goals: 1 },
+        { name: "Cucho", team: "Real Betis", goals: 1 },
+        { name: "Rüdiger", team: "Real Madrid", goals: 1 },
+        { name: "Bellingham", team: "Real Madrid", goals: 1 },
+        { name: "Valverde", team: "Real Madrid", goals: 1 },
+        { name: "Mbappé", team: "Real Madrid", goals: 2 },
+        { name: "Vini Jr.", team: "Real Madrid", goals: 1 },
+        { name: "Lewandowski", team: "FC Barcelona", goals: 1 },
+        { name: "Koundé", team: "FC Barcelona", goals: 2 },
+        { name: "Griezmann", team: "Atlético de Madrid", goals: 2 },
+        { name: "Iñaki Williams", team: "Athletic Club", goals: 1 },
+        { name: "Sergi Cardona", team: "Villarreal CF", goals: 1 },
+        { name: "Parejo", team: "Villarreal CF", goals: 1 },
+        { name: "Foyth", team: "Villarreal CF", goals: 1 },
+        { name: "Javi Guerra", team: "Valencia CF", goals: 2 },
+        { name: "Diego López", team: "Valencia CF", goals: 1 },
+        { name: "Ejuke", team: "Sevilla FC", goals: 1 },
+        { name: "Joan Jordán", team: "Sevilla FC", goals: 1 }
+    ];
+
+    let currentSort = { column: 3, asc: false }; // Orden inicial por goles de mayor a menor
+
+    function renderTable() {
+        const body = document.getElementById('pichichiBody');
+        body.innerHTML = '';
+
+        players.forEach((player, index) => {
+            const row = `
+                <tr>
+                    <td class="rank">${index + 1}</td>
+                    <td class="player-name">${player.name}</td>
+                    <td class="team-tag">${player.team}</td>
+                    <td class="goals-cell">${player.goals}</td>
+                </tr>
+            `;
+            body.innerHTML += row;
+        });
+    }
+
+    function sortTable(columnIndex) {
+        if (currentSort.column === columnIndex) {
+            currentSort.asc = !currentSort.asc;
+        } else {
+            currentSort.column = columnIndex;
+            currentSort.asc = true;
+        }
+
+        players.sort((a, b) => {
+            let valA, valB;
+
+            switch(columnIndex) {
+                case 0: return 0; // Rank se mantiene por el orden del array
+                case 1: valA = a.name; valB = b.name; break;
+                case 2: valA = a.team; valB = b.team; break;
+                case 3: valA = a.goals; valB = b.goals; break;
+            }
+
+            if (valA < valB) return currentSort.asc ? -1 : 1;
+            if (valA > valB) return currentSort.asc ? 1 : -1;
+            return 0;
+        });
+
+        renderTable();
+    }
+
+    // Inicializar por goles al cargar
+    players.sort((a, b) => b.goals - a.goals);
+    renderTable();
+</script>
+
+</body>
+</html>
