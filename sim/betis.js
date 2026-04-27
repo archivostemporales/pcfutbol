@@ -2,15 +2,17 @@ const plantillaBetis = [
     // TITULARES
     { nombre: "Pau López", pos: "POR", rit: 77, tir: 77, pas: 78, reg: 79, def: 48, fis: 79, med: 79, titular: true },
     { nombre: "Bartra", pos: "DEF", rit: 64, tir: 59, pas: 70, reg: 71, def: 80, fis: 75, med: 79, titular: true },
+    { nombre: "Kimmich", pos: "MED", rit: 72, tir: 74, pas: 89, reg: 84, def: 83, fis: 79, med: 89, titular: true },
     { nombre: "Lo Celso", pos: "MED", rit: 68, tir: 81, pas: 82, reg: 84, def: 68, fis: 71, med: 82, titular: true },
-    { nombre: "Isco", pos: "MED", rit: 66, tir: 79, pas: 85, reg: 85, def: 59, fis: 60, med: 84, titular: true },
     { nombre: "Antony", pos: "DEL", rit: 84, tir: 78, pas: 78, reg: 83, def: 43, fis: 70, med: 81, titular: true },
-    
+
     // SUPLENTES
     { nombre: "Álvaro Valles", pos: "POR", rit: 78, tir: 78, pas: 78, reg: 80, def: 41, fis: 80, med: 79, titular: false },
+    { nombre: "Diego Llorente", pos: "DEF", rit: 64, tir: 41, pas: 63, reg: 69, def: 81, fis: 76, med: 80, titular: false },
     { nombre: "Natan", pos: "DEF", rit: 56, tir: 33, pas: 55, reg: 66, def: 79, fis: 77, med: 78, titular: false },
     { nombre: "Amrabat", pos: "MED", rit: 61, tir: 70, pas: 73, reg: 74, def: 75, fis: 82, med: 78, titular: false },
     { nombre: "Pablo Fornals", pos: "MED", rit: 65, tir: 75, pas: 80, reg: 80, def: 73, fis: 71, med: 79, titular: false },
+    { nombre: "Isco", pos: "MED", rit: 66, tir: 79, pas: 85, reg: 85, def: 59, fis: 60, med: 84, titular: false },
     { nombre: "Cucho", pos: "DEL", rit: 81, tir: 77, pas: 75, reg: 81, def: 42, fis: 78, med: 78, titular: false },
 ];
 

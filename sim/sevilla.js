@@ -4,13 +4,15 @@ const plantillaSevilla = [
     { nombre: "Gudelj", pos: "DEF", rit: 46, tir: 73, pas: 78, reg: 69, def: 76, fis: 84, med: 77, titular: true },
     { nombre: "Ejuke", pos: "MED", rit: 90, tir: 69, pas: 71, reg: 82, def: 37, fis: 63, med: 78, titular: true },
     { nombre: "Sow", pos: "MED", rit: 78, tir: 69, pas: 73, reg: 76, def: 74, fis: 78, med: 76, titular: true },
-    { nombre: "Alexis", pos: "DEL", rit: 68, tir: 78, pas: 78, reg: 81, def: 48, fis: 59, med: 76, titular: true },
+    { nombre: "Haaland", pos: "DEL", rit: 86, tir: 91, pas: 70, reg: 80, def: 45, fis: 88, med: 90, titular: true },
+
 
     // SUPLENTES
     { nombre: "Álvaro", pos: "POR", rit: 75, tir: 71, pas: 68, reg: 76, def: 47, fis: 73, med: 74, titular: false },
     { nombre: "Carmona", pos: "DEF", rit: 80, tir: 65, pas: 69, reg: 73, def: 73, fis: 67, med: 76, titular: false },
     { nombre: "Mendy", pos: "MED", rit: 69, tir: 61, pas: 67, reg: 70, def: 74, fis: 83, med: 76, titular: false },
     { nombre: "Joan Jordán", pos: "MED", rit: 48, tir: 74, pas: 77, reg: 74, def: 68, fis: 75, med: 76, titular: false },
+    { nombre: "Alexis", pos: "DEL", rit: 68, tir: 78, pas: 78, reg: 81, def: 48, fis: 59, med: 76, titular: false },
     { nombre: "Adams", pos: "DEL", rit: 77, tir: 72, pas: 56, reg: 70, def: 29, fis: 75, med: 73, titular: false }
 ];
 

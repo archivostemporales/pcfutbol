@@ -9,9 +9,11 @@ const plantillaMadrid = [
     // SUPLENTES
     { nombre: "Lunin", pos: "POR", rit: 80, tir: 78, pas: 78, reg: 82, def: 37, fis: 80, med: 81, titular: false },
     { nombre: "Alexander-Arnold", pos: "DEF", rit: 76, tir: 72, pas: 89, reg: 80, def: 80, fis: 74, med: 86, titular: false },
+    { nombre: "Locatelli", pos: "MED", rit: 63, tir: 69, pas: 80, reg: 76, def: 81, fis: 78, med: 84, titular: false },
     { nombre: "Tchouaméni", pos: "MED", rit: 71, tir: 69, pas: 79, reg: 78, def: 81, fis: 82, med: 84, titular: false },
     { nombre: "Camavinga", pos: "MED", rit: 80, tir: 68, pas: 81, reg: 84, def: 78, fis: 80, med: 83, titular: false },
     { nombre: "Vini Jr.", pos: "DEL", rit: 95, tir: 84, pas: 81, reg: 91, def: 29, fis: 69, med: 89, titular: false }
+
 ];
 
 window.registrarEquipo(plantillaMadrid);

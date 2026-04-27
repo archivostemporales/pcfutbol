@@ -13,6 +13,7 @@ const plantillaBarcelona = [
     { nombre: "De Jong", pos: "MED", rit: 82, tir: 71, pas: 85, reg: 87, def: 78, fis: 77, med: 87, titular: false },
     { nombre: "Dani Olmo", pos: "MED", rit: 73, tir: 79, pas: 83, reg: 87, def: 50, fis: 56, med: 85, titular: false },
     { nombre: "Lewandowski", pos: "DEL", rit: 74, tir: 89, pas: 79, reg: 85, def: 44, fis: 84, med: 88, titular: false },
+    { nombre: "Osimhen", pos: "DEL", rit: 92, tir: 84, pas: 65, reg: 81, def: 42, fis: 84, med: 87, titular: false },
 
 ];
 
